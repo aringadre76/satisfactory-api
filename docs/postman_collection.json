@@ -1,0 +1,2309 @@
+{
+  "info": {
+    "name": "Satisfactory API - All Endpoints",
+    "description": "Complete collection of all Satisfactory API endpoints for testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        },
+        "description": "Root endpoint returning API information"
+      }
+    },
+    {
+      "name": "Miners",
+      "item": [
+        {
+          "name": "Get All Miners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/miners",
+              "host": ["{{base_url}}"],
+              "path": ["miners"]
+            },
+            "description": "Get all miner specifications"
+          }
+        },
+        {
+          "name": "Get Miner Mk1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/miners/1",
+              "host": ["{{base_url}}"],
+              "path": ["miners", "1"]
+            },
+            "description": "Get Miner Mk1 specifications"
+          }
+        },
+        {
+          "name": "Get Miner Mk2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/miners/2",
+              "host": ["{{base_url}}"],
+              "path": ["miners", "2"]
+            },
+            "description": "Get Miner Mk2 specifications"
+          }
+        },
+        {
+          "name": "Get Miner Mk3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/miners/3",
+              "host": ["{{base_url}}"],
+              "path": ["miners", "3"]
+            },
+            "description": "Get Miner Mk3 specifications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Belts",
+      "item": [
+        {
+          "name": "Get All Belts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts",
+              "host": ["{{base_url}}"],
+              "path": ["belts"]
+            },
+            "description": "Get all conveyor belt specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/1",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "1"]
+            },
+            "description": "Get Belt Mk1 specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/2",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "2"]
+            },
+            "description": "Get Belt Mk2 specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/3",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "3"]
+            },
+            "description": "Get Belt Mk3 specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/4",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "4"]
+            },
+            "description": "Get Belt Mk4 specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/5",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "5"]
+            },
+            "description": "Get Belt Mk5 specifications"
+          }
+        },
+        {
+          "name": "Get Belt Mk6",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/belts/6",
+              "host": ["{{base_url}}"],
+              "path": ["belts", "6"]
+            },
+            "description": "Get Belt Mk6 specifications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "Get All Recipes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"]
+            },
+            "description": "Get all recipes including alternate recipes"
+          }
+        },
+        {
+          "name": "Get Recipes - Alternate Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes?alternate_only=true",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"],
+              "query": [
+                {
+                  "key": "alternate_only",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Filter to only alternate recipes"
+          }
+        },
+        {
+          "name": "Get Recipes - By Building (Constructor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes?building=Constructor",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"],
+              "query": [
+                {
+                  "key": "building",
+                  "value": "Constructor"
+                }
+              ]
+            },
+            "description": "Filter recipes by building type"
+          }
+        },
+        {
+          "name": "Get Recipes - Combined Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes?alternate_only=true&building=Assembler",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"],
+              "query": [
+                {
+                  "key": "alternate_only",
+                  "value": "true"
+                },
+                {
+                  "key": "building",
+                  "value": "Assembler"
+                }
+              ]
+            },
+            "description": "Get alternate recipes for specific building"
+          }
+        },
+        {
+          "name": "Get Recipe by Name (Class Name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes/Recipe_IronRod_C",
+              "host": ["{{base_url}}"],
+              "path": ["recipes", "Recipe_IronRod_C"]
+            },
+            "description": "Get specific recipe by class name"
+          }
+        },
+        {
+          "name": "Get Recipe by Name (Display Name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes/Iron%20Rod",
+              "host": ["{{base_url}}"],
+              "path": ["recipes", "Iron Rod"]
+            },
+            "description": "Get specific recipe by display name"
+          }
+        },
+        {
+          "name": "Get Recipe by Name (Alternate)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes/Alternate:%20Pure%20Iron%20Ingot",
+              "host": ["{{base_url}}"],
+              "path": ["recipes", "Alternate: Pure Iron Ingot"]
+            },
+            "description": "Get alternate recipe by display name"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Buildings",
+      "item": [
+        {
+          "name": "Get All Buildings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings",
+              "host": ["{{base_url}}"],
+              "path": ["buildings"]
+            },
+            "description": "Get all production buildings"
+          }
+        },
+        {
+          "name": "Get Buildings - By Type (Constructor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings?building_type=Constructor",
+              "host": ["{{base_url}}"],
+              "path": ["buildings"],
+              "query": [
+                {
+                  "key": "building_type",
+                  "value": "Constructor"
+                }
+              ]
+            },
+            "description": "Filter buildings by type"
+          }
+        },
+        {
+          "name": "Get Building by Type (Constructor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings/Constructor",
+              "host": ["{{base_url}}"],
+              "path": ["buildings", "Constructor"]
+            },
+            "description": "Get specific building by type"
+          }
+        },
+        {
+          "name": "Get Building by Type (Assembler)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings/Assembler",
+              "host": ["{{base_url}}"],
+              "path": ["buildings", "Assembler"]
+            },
+            "description": "Get Assembler building"
+          }
+        },
+        {
+          "name": "Get Building by Type (Manufacturer)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings/Manufacturer",
+              "host": ["{{base_url}}"],
+              "path": ["buildings", "Manufacturer"]
+            },
+            "description": "Get Manufacturer building"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "Get All Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items",
+              "host": ["{{base_url}}"],
+              "path": ["items"]
+            },
+            "description": "Get all items (raw resources, components, products, equipment, building parts)"
+          }
+        },
+        {
+          "name": "Get Items - By Type (Component)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items?item_type=component",
+              "host": ["{{base_url}}"],
+              "path": ["items"],
+              "query": [
+                {
+                  "key": "item_type",
+                  "value": "component"
+                }
+              ]
+            },
+            "description": "Filter items by type: component"
+          }
+        },
+        {
+          "name": "Get Items - By Type (Raw Resource)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items?item_type=raw_resource",
+              "host": ["{{base_url}}"],
+              "path": ["items"],
+              "query": [
+                {
+                  "key": "item_type",
+                  "value": "raw_resource"
+                }
+              ]
+            },
+            "description": "Filter items by type: raw_resource"
+          }
+        },
+        {
+          "name": "Get Item by Name (Class Name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/Desc_IronPlate_C",
+              "host": ["{{base_url}}"],
+              "path": ["items", "Desc_IronPlate_C"]
+            },
+            "description": "Get specific item by class name"
+          }
+        },
+        {
+          "name": "Get Item by Name (Display Name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/Iron%20Plate",
+              "host": ["{{base_url}}"],
+              "path": ["items", "Iron Plate"]
+            },
+            "description": "Get specific item by display name"
+          }
+        },
+        {
+          "name": "Get Item by Name (Iron Ore)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/Iron%20Ore",
+              "host": ["{{base_url}}"],
+              "path": ["items", "Iron Ore"]
+            },
+            "description": "Get Iron Ore item"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        {
+          "name": "Get All Resource Nodes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/resource-nodes",
+              "host": ["{{base_url}}"],
+              "path": ["resource-nodes"]
+            },
+            "description": "Get all resource node types with purity levels"
+          }
+        },
+        {
+          "name": "Get All Raw Resources",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/raw-resources",
+              "host": ["{{base_url}}"],
+              "path": ["raw-resources"]
+            },
+            "description": "Get all raw resource definitions"
+          }
+        },
+        {
+          "name": "Get Wiki Reference",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wiki/Iron%20Ore",
+              "host": ["{{base_url}}"],
+              "path": ["wiki", "Iron Ore"]
+            },
+            "description": "Get wiki reference URL for an item"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transportation",
+      "item": [
+        {
+          "name": "Pipelines",
+          "item": [
+            {
+              "name": "Get All Pipelines",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipelines",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipelines"]
+                },
+                "description": "Get all pipelines (Mk1, Mk2)"
+              }
+            },
+            {
+              "name": "Get Pipeline Mk1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipelines/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipelines", "1"]
+                },
+                "description": "Get Pipeline Mk1 specifications"
+              }
+            },
+            {
+              "name": "Get Pipeline Mk2",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipelines/2",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipelines", "2"]
+                },
+                "description": "Get Pipeline Mk2 specifications"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pipeline Pumps",
+          "item": [
+            {
+              "name": "Get All Pipeline Pumps",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipeline-pumps",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipeline-pumps"]
+                },
+                "description": "Get all pipeline pumps (Mk1, Mk2)"
+              }
+            },
+            {
+              "name": "Get Pipeline Pump Mk1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipeline-pumps/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipeline-pumps", "1"]
+                },
+                "description": "Get Pipeline Pump Mk1 specifications"
+              }
+            },
+            {
+              "name": "Get Pipeline Pump Mk2",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/pipeline-pumps/2",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "pipeline-pumps", "2"]
+                },
+                "description": "Get Pipeline Pump Mk2 specifications"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Trains",
+          "item": [
+            {
+              "name": "Get All Locomotives",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/locomotives",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "locomotives"]
+                },
+                "description": "Get electric locomotive specifications"
+              }
+            },
+            {
+              "name": "Get All Freight Cars",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/freight-cars",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "freight-cars"]
+                },
+                "description": "Get freight car specifications"
+              }
+            },
+            {
+              "name": "Get All Train Stations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations"]
+                },
+                "description": "Get all train stations"
+              }
+            },
+            {
+              "name": "Get Train Stations - Solid Type",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations?station_type=solid",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations"],
+                  "query": [
+                    {
+                      "key": "station_type",
+                      "value": "solid"
+                    }
+                  ]
+                },
+                "description": "Filter train stations by solid type"
+              }
+            },
+            {
+              "name": "Get Train Stations - Liquid Type",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations?station_type=liquid",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations"],
+                  "query": [
+                    {
+                      "key": "station_type",
+                      "value": "liquid"
+                    }
+                  ]
+                },
+                "description": "Filter train stations by liquid type"
+              }
+            },
+            {
+              "name": "Get Train Stations - Empty Type",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations?station_type=empty",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations"],
+                  "query": [
+                    {
+                      "key": "station_type",
+                      "value": "empty"
+                    }
+                  ]
+                },
+                "description": "Filter train stations by empty platform type"
+              }
+            },
+            {
+              "name": "Get Locomotive by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/locomotives/Electric%20Locomotive",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "locomotives", "Electric Locomotive"]
+                },
+                "description": "Get specific locomotive by display name"
+              }
+            },
+            {
+              "name": "Get Freight Car by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/freight-cars/Freight%20Car",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "freight-cars", "Freight Car"]
+                },
+                "description": "Get specific freight car by display name"
+              }
+            },
+            {
+              "name": "Get All Train Signals",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/signals",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "signals"]
+                },
+                "description": "Get all train signals (Block Signal, Path Signal, End Stop)"
+              }
+            },
+            {
+              "name": "Get Train Signals - Block Signal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/signals?signal_type=Block%20Signal",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "signals"],
+                  "query": [
+                    {
+                      "key": "signal_type",
+                      "value": "Block Signal"
+                    }
+                  ]
+                },
+                "description": "Filter train signals by type"
+              }
+            },
+            {
+              "name": "Get Train Signal - Block Signal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/signals/Block%20Signal",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "signals", "Block Signal"]
+                },
+                "description": "Get specific train signal by type"
+              }
+            },
+            {
+              "name": "Get Train Signal - Path Signal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/signals/Path%20Signal",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "signals", "Path Signal"]
+                },
+                "description": "Get Path Signal specifications"
+              }
+            },
+            {
+              "name": "Get Train Signal - End Stop",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/trains/signals/End%20Stop",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "trains", "signals", "End Stop"]
+                },
+                "description": "Get End Stop signal specifications"
+              }
+            },
+            {
+              "name": "Get Train Station by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations/Train%20Station",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations", "Train Station"]
+                },
+                "description": "Get specific train station by display name"
+              }
+            },
+            {
+              "name": "Get Train Station by Name - Fluid Freight Platform",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/train-stations/Fluid%20Freight%20Platform",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "train-stations", "Fluid Freight Platform"]
+                },
+                "description": "Get Fluid Freight Platform by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Railway Tracks",
+          "item": [
+            {
+              "name": "Get All Railway Tracks",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/railway-tracks",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "railway-tracks"]
+                },
+                "description": "Get railway track information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Vehicles",
+          "item": [
+            {
+              "name": "Get All Trucks",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/vehicles/trucks",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "vehicles", "trucks"]
+                },
+                "description": "Get all vehicle types (Truck, Tractor)"
+              }
+            },
+            {
+              "name": "Get Truck",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/vehicles/trucks/truck",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "vehicles", "trucks", "truck"]
+                },
+                "description": "Get Truck specifications"
+              }
+            },
+            {
+              "name": "Get Tractor",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/vehicles/trucks/tractor",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "vehicles", "trucks", "tractor"]
+                },
+                "description": "Get Tractor specifications"
+              }
+            },
+            {
+              "name": "Get Truck Stations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/truck-stations",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "truck-stations"]
+                },
+                "description": "Get truck station specifications"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Drones",
+          "item": [
+            {
+              "name": "Get All Drones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/drones",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "drones"]
+                },
+                "description": "Get drone specifications"
+              }
+            },
+            {
+              "name": "Get Drone Stations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/drone-stations",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "drone-stations"]
+                },
+                "description": "Get drone station specifications"
+              }
+            },
+            {
+              "name": "Get Drone by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/drones/Drone",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "drones", "Drone"]
+                },
+                "description": "Get specific drone by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Freight Platforms",
+          "item": [
+            {
+              "name": "Get All Freight Platforms",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/transportation/freight-platforms",
+                  "host": ["{{base_url}}"],
+                  "path": ["transportation", "freight-platforms"]
+                },
+                "description": "Get freight platform information for trains"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Calculations",
+      "item": [
+        {
+          "name": "Production Rate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/production-rate?recipe=Iron%20Plate",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "production-rate"],
+              "query": [
+                {
+                  "key": "recipe",
+                  "value": "Iron Plate",
+                  "description": "Recipe name or class name"
+                }
+              ]
+            },
+            "description": "Calculate production rate (items/minute) for a recipe"
+          }
+        },
+        {
+          "name": "Production Rate with Overclock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/production-rate?recipe=Recipe_IronPlate_C&overclock=150",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "production-rate"],
+              "query": [
+                {
+                  "key": "recipe",
+                  "value": "Recipe_IronPlate_C",
+                  "description": "Recipe name or class name"
+                },
+                {
+                  "key": "overclock",
+                  "value": "150",
+                  "description": "Overclock percentage (1.0-250.0)"
+                }
+              ]
+            },
+            "description": "Calculate production rate with overclocking"
+          }
+        },
+        {
+          "name": "Buildings Needed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/buildings-needed?recipe=Iron%20Plate&target_rate=60",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "buildings-needed"],
+              "query": [
+                {
+                  "key": "recipe",
+                  "value": "Iron Plate",
+                  "description": "Recipe name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate how many buildings are needed for a target production rate"
+          }
+        },
+        {
+          "name": "Buildings Needed with Overclock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/buildings-needed?recipe=Iron%20Plate&target_rate=120&overclock=200",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "buildings-needed"],
+              "query": [
+                {
+                  "key": "recipe",
+                  "value": "Iron Plate",
+                  "description": "Recipe name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "120",
+                  "description": "Target production rate (items per minute)"
+                },
+                {
+                  "key": "overclock",
+                  "value": "200",
+                  "description": "Overclock percentage"
+                }
+              ]
+            },
+            "description": "Calculate buildings needed with overclocking"
+          }
+        },
+        {
+          "name": "Production Chain",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/production-chain?item=Heavy%20Modular%20Frame&target_rate=10",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "production-chain"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Heavy Modular Frame",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "10",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate the complete production chain for an item"
+          }
+        },
+        {
+          "name": "Production Chain - No Alternates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/production-chain?item=Iron%20Plate&target_rate=60&include_alternates=false",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "production-chain"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                },
+                {
+                  "key": "include_alternates",
+                  "value": "false",
+                  "description": "Include alternate recipes"
+                }
+              ]
+            },
+            "description": "Calculate production chain excluding alternate recipes"
+          }
+        },
+        {
+          "name": "Production Chain - Preferred Recipe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/production-chain?item=Computer&target_rate=5&preferred_recipe=Alternate:%20Caterium%20Computer",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "production-chain"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Computer",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "5",
+                  "description": "Target production rate (items per minute)"
+                },
+                {
+                  "key": "preferred_recipe",
+                  "value": "Alternate: Caterium Computer",
+                  "description": "Use specific recipe"
+                }
+              ]
+            },
+            "description": "Calculate production chain with preferred recipe"
+          }
+        },
+        {
+          "name": "Compare Recipes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/compare-recipes?item=Iron%20Plate",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "compare-recipes"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                }
+              ]
+            },
+            "description": "Compare all recipes (including alternates) that produce a specific item"
+          }
+        },
+        {
+          "name": "Miner Output",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/miner-output?resource=Iron%20Ore&miner_mk=3&purity=pure&overclock=200",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "miner-output"],
+              "query": [
+                {
+                  "key": "resource",
+                  "value": "Iron Ore",
+                  "description": "Resource name"
+                },
+                {
+                  "key": "miner_mk",
+                  "value": "3",
+                  "description": "Miner mark (1, 2, or 3)"
+                },
+                {
+                  "key": "purity",
+                  "value": "pure",
+                  "description": "Purity level: impure, normal, or pure"
+                },
+                {
+                  "key": "overclock",
+                  "value": "200",
+                  "description": "Overclock percentage"
+                }
+              ]
+            },
+            "description": "Calculate miner extraction output with purity and overclocking"
+          }
+        },
+        {
+          "name": "Miner Output - Normal Purity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/miner-output?resource=Coal&miner_mk=2&purity=normal",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "miner-output"],
+              "query": [
+                {
+                  "key": "resource",
+                  "value": "Coal",
+                  "description": "Resource name"
+                },
+                {
+                  "key": "miner_mk",
+                  "value": "2",
+                  "description": "Miner mark (1, 2, or 3)"
+                },
+                {
+                  "key": "purity",
+                  "value": "normal",
+                  "description": "Purity level"
+                }
+              ]
+            },
+            "description": "Calculate miner output with normal purity"
+          }
+        },
+        {
+          "name": "Belt Requirements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/belt-requirements?throughput=540",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "belt-requirements"],
+              "query": [
+                {
+                  "key": "throughput",
+                  "value": "540",
+                  "description": "Required throughput (items per minute)"
+                }
+              ]
+            },
+            "description": "Find suitable conveyor belts for a required throughput"
+          }
+        },
+        {
+          "name": "Belt Requirements - High Throughput",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/belt-requirements?throughput=1200",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "belt-requirements"],
+              "query": [
+                {
+                  "key": "throughput",
+                  "value": "1200",
+                  "description": "Required throughput (items per minute)"
+                }
+              ]
+            },
+            "description": "Find suitable belts for high throughput"
+          }
+        },
+        {
+          "name": "Perfect Ratios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/perfect-ratios?item=Iron%20Plate&target_rate=60",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "perfect-ratios"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate perfect building ratios for 100% efficiency using exact decimal building counts and optional overclocking"
+          }
+        },
+        {
+          "name": "Perfect Ratios - With Overclock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/perfect-ratios?item=Heavy%20Modular%20Frame&target_rate=10&allow_overclock=true",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "perfect-ratios"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Heavy Modular Frame",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "10",
+                  "description": "Target production rate (items per minute)"
+                },
+                {
+                  "key": "allow_overclock",
+                  "value": "true",
+                  "description": "Allow overclocking to achieve perfect ratios"
+                }
+              ]
+            },
+            "description": "Calculate perfect ratios with overclocking enabled"
+          }
+        },
+        {
+          "name": "Optimize 100 Percent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/optimize-100-percent?item=Iron%20Plate&target_rate=60",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "optimize-100-percent"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Optimize production chain for 100% efficiency with perfect ratios, optimal overclocking, and efficiency analysis"
+          }
+        },
+        {
+          "name": "Optimize 100 Percent - With Overclock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/optimize-100-percent?item=Computer&target_rate=5&allow_overclock=true",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "optimize-100-percent"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Computer",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "5",
+                  "description": "Target production rate (items per minute)"
+                },
+                {
+                  "key": "allow_overclock",
+                  "value": "true",
+                  "description": "Allow overclocking"
+                }
+              ]
+            },
+            "description": "Optimize for 100% efficiency with overclocking"
+          }
+        },
+        {
+          "name": "Factory Efficiency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/factory-efficiency?item=Iron%20Plate&target_rate=60",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "factory-efficiency"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate comprehensive factory efficiency metrics including building utilization, belt utilization, bottlenecks, and waste analysis"
+          }
+        },
+        {
+          "name": "Factory Efficiency - Heavy Modular Frame",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/factory-efficiency?item=Heavy%20Modular%20Frame&target_rate=10",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "factory-efficiency"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Heavy Modular Frame",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "10",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate factory efficiency for complex item"
+          }
+        },
+        {
+          "name": "Building Utilization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/building-utilization?item=Iron%20Plate&target_rate=60",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "building-utilization"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Iron Plate",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "60",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Calculate per-building utilization percentages and identify under-utilized, over-utilized, and optimally-utilized buildings"
+          }
+        },
+        {
+          "name": "Building Utilization - Computer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/calculate/building-utilization?item=Computer&target_rate=5",
+              "host": ["{{base_url}}"],
+              "path": ["calculate", "building-utilization"],
+              "query": [
+                {
+                  "key": "item",
+                  "value": "Computer",
+                  "description": "Item name or class name"
+                },
+                {
+                  "key": "target_rate",
+                  "value": "5",
+                  "description": "Target production rate (items per minute)"
+                }
+              ]
+            },
+            "description": "Analyze building utilization for complex item"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Power",
+      "item": [
+        {
+          "name": "Generators",
+          "item": [
+            {
+              "name": "Get All Generators",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators"]
+                },
+                "description": "Get all power generators"
+              }
+            },
+            {
+              "name": "Get Generators - By Type (Coal)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators?generator_type=Coal",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators"],
+                  "query": [
+                    {
+                      "key": "generator_type",
+                      "value": "Coal"
+                    }
+                  ]
+                },
+                "description": "Filter generators by type"
+              }
+            },
+            {
+              "name": "Get Generator by Type (Coal)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators/Coal",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators", "Coal"]
+                },
+                "description": "Get specific power generator by type"
+              }
+            },
+            {
+              "name": "Get Generator by Type (Nuclear)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators/Nuclear",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators", "Nuclear"]
+                },
+                "description": "Get Nuclear generator"
+              }
+            },
+            {
+              "name": "Get Generator by Name - Coal Generator",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators/name/Coal%20Generator",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators", "name", "Coal Generator"]
+                },
+                "description": "Get specific power generator by display name"
+              }
+            },
+            {
+              "name": "Get Generator by Name - Biomass",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators/name/Biomass",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators", "name", "Biomass"]
+                },
+                "description": "Get generator by name or type"
+              }
+            },
+            {
+              "name": "Get Generators by Tier",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/generators/tier/3",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "generators", "tier", "3"]
+                },
+                "description": "Get all power generators unlocked at a specific tier"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Storage",
+          "item": [
+            {
+              "name": "Get Power Storage",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/storage",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "storage"]
+                },
+                "description": "Get power storage information"
+              }
+            },
+            {
+              "name": "Get Power Storage by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/storage/Power%20Storage",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "storage", "Power Storage"]
+                },
+                "description": "Get specific power storage by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poles",
+          "item": [
+            {
+              "name": "Get All Power Poles",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/poles",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "poles"]
+                },
+                "description": "Get all power poles (Mk1, Mk2, Mk3)"
+              }
+            },
+            {
+              "name": "Get Power Pole Mk1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/poles/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "poles", "1"]
+                },
+                "description": "Get Power Pole Mk1"
+              }
+            },
+            {
+              "name": "Get Power Pole Mk2",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/poles/2",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "poles", "2"]
+                },
+                "description": "Get Power Pole Mk2"
+              }
+            },
+            {
+              "name": "Get Power Pole Mk3",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/poles/3",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "poles", "3"]
+                },
+                "description": "Get Power Pole Mk3"
+              }
+            },
+            {
+              "name": "Get Power Pole by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/power/poles/name/Power%20Pole%20Mk.1",
+                  "host": ["{{base_url}}"],
+                  "path": ["power", "poles", "name", "Power Pole Mk.1"]
+                },
+                "description": "Get specific power pole by display name"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Logistics",
+      "item": [
+        {
+          "name": "Splitters",
+          "item": [
+            {
+              "name": "Get All Splitters",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/splitters",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "splitters"]
+                },
+                "description": "Get all conveyor splitters (Regular, Smart, Programmable)"
+              }
+            },
+            {
+              "name": "Get Splitters - By Type (Smart)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/splitters?splitter_type=Smart",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "splitters"],
+                  "query": [
+                    {
+                      "key": "splitter_type",
+                      "value": "Smart"
+                    }
+                  ]
+                },
+                "description": "Filter splitters by type"
+              }
+            },
+            {
+              "name": "Get Splitter by Name - Conveyor Splitter",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/splitters/Conveyor%20Splitter",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "splitters", "Conveyor Splitter"]
+                },
+                "description": "Get specific splitter by display name or type"
+              }
+            },
+            {
+              "name": "Get Splitter by Name - Smart",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/splitters/Smart",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "splitters", "Smart"]
+                },
+                "description": "Get splitter by type name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mergers",
+          "item": [
+            {
+              "name": "Get All Mergers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/mergers",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "mergers"]
+                },
+                "description": "Get conveyor merger information"
+              }
+            },
+            {
+              "name": "Get Merger by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/mergers/Conveyor%20Merger",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "mergers", "Conveyor Merger"]
+                },
+                "description": "Get specific merger by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Storage Containers",
+          "item": [
+            {
+              "name": "Get All Storage Containers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/storage",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "storage"]
+                },
+                "description": "Get all storage containers (Storage, Industrial, Buffer)"
+              }
+            },
+            {
+              "name": "Get Storage Containers - By Type (Industrial)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/storage?container_type=Industrial",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "storage"],
+                  "query": [
+                    {
+                      "key": "container_type",
+                      "value": "Industrial"
+                    }
+                  ]
+                },
+                "description": "Filter storage containers by type"
+              }
+            },
+            {
+              "name": "Get Storage Container by Name - Storage Container",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/storage/Storage%20Container",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "storage", "Storage Container"]
+                },
+                "description": "Get specific storage container by display name or type"
+              }
+            },
+            {
+              "name": "Get Storage Container by Name - Industrial",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/storage/Industrial",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "storage", "Industrial"]
+                },
+                "description": "Get storage container by type name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Fluid Buffers",
+          "item": [
+            {
+              "name": "Get All Fluid Buffers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/fluid-buffers",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "fluid-buffers"]
+                },
+                "description": "Get all fluid buffer types"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Valves",
+          "item": [
+            {
+              "name": "Get All Valves",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/valves",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "valves"]
+                },
+                "description": "Get all valve types (Regular, Inverted)"
+              }
+            },
+            {
+              "name": "Get Valves - By Type (Inverted)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/valves?valve_type=Inverted",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "valves"],
+                  "query": [
+                    {
+                      "key": "valve_type",
+                      "value": "Inverted"
+                    }
+                  ]
+                },
+                "description": "Filter valves by type"
+              }
+            },
+            {
+              "name": "Get Valve by Name - Valve",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/valves/Valve",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "valves", "Valve"]
+                },
+                "description": "Get specific valve by display name or type"
+              }
+            },
+            {
+              "name": "Get Valve by Name - Inverted",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logistics/valves/Inverted",
+                  "host": ["{{base_url}}"],
+                  "path": ["logistics", "valves", "Inverted"]
+                },
+                "description": "Get valve by type name"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Extractors",
+      "item": [
+        {
+          "name": "Water Extractors",
+          "item": [
+            {
+              "name": "Get All Water Extractors",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/extractors/water-extractors",
+                  "host": ["{{base_url}}"],
+                  "path": ["extractors", "water-extractors"]
+                },
+                "description": "Get water extractor information"
+              }
+            },
+            {
+              "name": "Get Water Extractor by Name",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/extractors/water-extractors/Water%20Extractor",
+                  "host": ["{{base_url}}"],
+                  "path": ["extractors", "water-extractors", "Water Extractor"]
+                },
+                "description": "Get specific water extractor by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resource Well Extractors",
+          "item": [
+            {
+              "name": "Get All Resource Well Extractors",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/extractors/resource-well-extractors",
+                  "host": ["{{base_url}}"],
+                  "path": ["extractors", "resource-well-extractors"]
+                },
+                "description": "Get resource well extractors (Oil, Nitrogen, etc.)"
+              }
+            },
+            {
+              "name": "Get Resource Well Extractors - By Type (Oil)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/extractors/resource-well-extractors?resource_type=Oil",
+                  "host": ["{{base_url}}"],
+                  "path": ["extractors", "resource-well-extractors"],
+                  "query": [
+                    {
+                      "key": "resource_type",
+                      "value": "Oil"
+                    }
+                  ]
+                },
+                "description": "Filter resource well extractors by type"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Progression",
+      "item": [
+        {
+          "name": "Milestones",
+          "item": [
+            {
+              "name": "Get All Milestones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones"]
+                },
+                "description": "Get milestone information for tier progression"
+              }
+            },
+            {
+              "name": "Get Milestones - By Tier",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones?tier=3",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones"],
+                  "query": [
+                    {
+                      "key": "tier",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "description": "Filter milestones by tier number"
+              }
+            },
+            {
+              "name": "Get Milestones - By Phase",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones?phase=2",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones"],
+                  "query": [
+                    {
+                      "key": "phase",
+                      "value": "2"
+                    }
+                  ]
+                },
+                "description": "Filter milestones by phase number"
+              }
+            },
+            {
+              "name": "Get Milestones by Tier (Path Parameter)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones/3",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones", "3"]
+                },
+                "description": "Get all milestones for a specific tier"
+              }
+            },
+            {
+              "name": "Get Milestone by Name - Coal Power",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones/name/Coal%20Power",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones", "name", "Coal Power"]
+                },
+                "description": "Get specific milestone by display name"
+              }
+            },
+            {
+              "name": "Get Milestone by Name - Quantum Encoding",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/milestones/name/Quantum%20Encoding",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "milestones", "name", "Quantum Encoding"]
+                },
+                "description": "Get milestone by display name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Unlocks",
+          "item": [
+            {
+              "name": "Get All Unlocks",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks"]
+                },
+                "description": "Get unlock information for buildings, items, and recipes"
+              }
+            },
+            {
+              "name": "Get Unlocks - By Type (Building)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks?unlock_type=building",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks"],
+                  "query": [
+                    {
+                      "key": "unlock_type",
+                      "value": "building"
+                    }
+                  ]
+                },
+                "description": "Filter unlocks by type"
+              }
+            },
+            {
+              "name": "Get Unlocks - By Tier",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks?tier=4",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks"],
+                  "query": [
+                    {
+                      "key": "tier",
+                      "value": "4"
+                    }
+                  ]
+                },
+                "description": "Filter unlocks by tier number"
+              }
+            },
+            {
+              "name": "Get Unlocks - By Milestone",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks?milestone=Coal%20Power",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks"],
+                  "query": [
+                    {
+                      "key": "milestone",
+                      "value": "Coal Power"
+                    }
+                  ]
+                },
+                "description": "Filter unlocks by milestone name"
+              }
+            },
+            {
+              "name": "Get Unlock by Name - Constructor",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks/Constructor",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks", "Constructor"]
+                },
+                "description": "Get specific unlock by display name or class name"
+              }
+            },
+            {
+              "name": "Get Unlock by Name - Iron Plate",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks/Iron%20Plate",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks", "Iron Plate"]
+                },
+                "description": "Get unlock by display name"
+              }
+            },
+            {
+              "name": "Get Unlocks by Type - Building",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks/type/building",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks", "type", "building"]
+                },
+                "description": "Get all unlocks of type building"
+              }
+            },
+            {
+              "name": "Get Unlocks by Type - Recipe",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks/type/recipe",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks", "type", "recipe"]
+                },
+                "description": "Get all unlocks of type recipe"
+              }
+            },
+            {
+              "name": "Get Unlocks by Type - Schematic",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/progression/unlocks/type/schematic",
+                  "host": ["{{base_url}}"],
+                  "path": ["progression", "unlocks", "type", "schematic"]
+                },
+                "description": "Get all unlocks of type schematic"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/docs",
+              "host": ["{{base_url}}"],
+              "path": ["docs"]
+            },
+            "description": "Swagger UI interactive API documentation"
+          }
+        },
+        {
+          "name": "ReDoc",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redoc",
+              "host": ["{{base_url}}"],
+              "path": ["redoc"]
+            },
+            "description": "ReDoc interactive API documentation"
+          }
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/openapi.json",
+              "host": ["{{base_url}}"],
+              "path": ["openapi.json"]
+            },
+            "description": "OpenAPI 3.0 specification in JSON format"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "description": "Base URL for the Satisfactory API",
+      "disabled": false
+    },
+    {
+      "key": "wiki_item",
+      "value": "iron_ore",
+      "description": "Default item for wiki lookup",
+      "disabled": false
+    }
+  ]
+}

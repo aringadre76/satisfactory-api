@@ -1,0 +1,1218 @@
+{
+  "summary": {
+    "total": 134,
+    "successes": 134,
+    "failures": 0,
+    "avg_ms": 67.39797663436521,
+    "min_ms": 5.422419999376871,
+    "max_ms": 780.38595200087
+  },
+  "results": [
+    {
+      "name": "Root",
+      "method": "GET",
+      "url": "http://localhost:8000/",
+      "status": 200,
+      "time_ms": 8.695938000528258,
+      "size": 73,
+      "success": true
+    },
+    {
+      "name": "Get All Miners",
+      "method": "GET",
+      "url": "http://localhost:8000/miners",
+      "status": 200,
+      "time_ms": 7.4562919999152655,
+      "size": 1365,
+      "success": true
+    },
+    {
+      "name": "Get Miner Mk1",
+      "method": "GET",
+      "url": "http://localhost:8000/miners/1",
+      "status": 200,
+      "time_ms": 12.96887199896446,
+      "size": 452,
+      "success": true
+    },
+    {
+      "name": "Get Miner Mk2",
+      "method": "GET",
+      "url": "http://localhost:8000/miners/2",
+      "status": 200,
+      "time_ms": 9.115286000451306,
+      "size": 454,
+      "success": true
+    },
+    {
+      "name": "Get Miner Mk3",
+      "method": "GET",
+      "url": "http://localhost:8000/miners/3",
+      "status": 200,
+      "time_ms": 10.886985999604804,
+      "size": 455,
+      "success": true
+    },
+    {
+      "name": "Get All Belts",
+      "method": "GET",
+      "url": "http://localhost:8000/belts",
+      "status": 200,
+      "time_ms": 9.800162000829005,
+      "size": 1203,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk1",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/1",
+      "status": 200,
+      "time_ms": 15.676297998652444,
+      "size": 198,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk2",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/2",
+      "status": 200,
+      "time_ms": 13.614303999929689,
+      "size": 199,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk3",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/3",
+      "status": 200,
+      "time_ms": 10.581640000964398,
+      "size": 199,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk4",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/4",
+      "status": 200,
+      "time_ms": 10.890616000324371,
+      "size": 199,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk5",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/5",
+      "status": 200,
+      "time_ms": 11.10431699999026,
+      "size": 200,
+      "success": true
+    },
+    {
+      "name": "Get Belt Mk6",
+      "method": "GET",
+      "url": "http://localhost:8000/belts/6",
+      "status": 200,
+      "time_ms": 12.50296000034723,
+      "size": 201,
+      "success": true
+    },
+    {
+      "name": "Get All Recipes",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes",
+      "status": 200,
+      "time_ms": 51.7850489995908,
+      "size": 585361,
+      "success": true
+    },
+    {
+      "name": "Get Recipes - Alternate Only",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes?alternate_only=true",
+      "status": 200,
+      "time_ms": 55.30925300081435,
+      "size": 84577,
+      "success": true
+    },
+    {
+      "name": "Get Recipes - By Building (Constructor)",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes?building=Constructor",
+      "status": 200,
+      "time_ms": 57.34310200023174,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Recipes - Combined Filters",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes?alternate_only=true&building=Assembler",
+      "status": 200,
+      "time_ms": 60.02556299972639,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Recipe by Name (Class Name)",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes/Recipe_IronRod_C",
+      "status": 200,
+      "time_ms": 62.728032000450185,
+      "size": 520,
+      "success": true
+    },
+    {
+      "name": "Get Recipe by Name (Display Name)",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes/Iron%20Rod",
+      "status": 200,
+      "time_ms": 65.47766299991054,
+      "size": 520,
+      "success": true
+    },
+    {
+      "name": "Get Recipe by Name (Alternate)",
+      "method": "GET",
+      "url": "http://localhost:8000/recipes/Alternate:%20Pure%20Iron%20Ingot",
+      "status": 200,
+      "time_ms": 67.8790170004504,
+      "size": 699,
+      "success": true
+    },
+    {
+      "name": "Get All Buildings",
+      "method": "GET",
+      "url": "http://localhost:8000/buildings",
+      "status": 200,
+      "time_ms": 72.5225699989096,
+      "size": 3077,
+      "success": true
+    },
+    {
+      "name": "Get Buildings - By Type (Constructor)",
+      "method": "GET",
+      "url": "http://localhost:8000/buildings?building_type=Constructor",
+      "status": 200,
+      "time_ms": 38.084496998635586,
+      "size": 447,
+      "success": true
+    },
+    {
+      "name": "Get Building by Type (Constructor)",
+      "method": "GET",
+      "url": "http://localhost:8000/buildings/Constructor",
+      "status": 200,
+      "time_ms": 38.553758000489324,
+      "size": 445,
+      "success": true
+    },
+    {
+      "name": "Get Building by Type (Assembler)",
+      "method": "GET",
+      "url": "http://localhost:8000/buildings/Assembler",
+      "status": 200,
+      "time_ms": 39.965769999980694,
+      "size": 441,
+      "success": true
+    },
+    {
+      "name": "Get Building by Type (Manufacturer)",
+      "method": "GET",
+      "url": "http://localhost:8000/buildings/Manufacturer",
+      "status": 200,
+      "time_ms": 41.469334999419516,
+      "size": 456,
+      "success": true
+    },
+    {
+      "name": "Get All Items",
+      "method": "GET",
+      "url": "http://localhost:8000/items",
+      "status": 200,
+      "time_ms": 39.54640899974038,
+      "size": 45081,
+      "success": true
+    },
+    {
+      "name": "Get Items - By Type (Component)",
+      "method": "GET",
+      "url": "http://localhost:8000/items?item_type=component",
+      "status": 200,
+      "time_ms": 37.091961999976775,
+      "size": 45081,
+      "success": true
+    },
+    {
+      "name": "Get Items - By Type (Raw Resource)",
+      "method": "GET",
+      "url": "http://localhost:8000/items?item_type=raw_resource",
+      "status": 200,
+      "time_ms": 34.78907799944864,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Item by Name (Class Name)",
+      "method": "GET",
+      "url": "http://localhost:8000/items/Desc_IronPlate_C",
+      "status": 200,
+      "time_ms": 29.280020000442164,
+      "size": 170,
+      "success": true
+    },
+    {
+      "name": "Get Item by Name (Display Name)",
+      "method": "GET",
+      "url": "http://localhost:8000/items/Iron%20Plate",
+      "status": 200,
+      "time_ms": 24.451661000057356,
+      "size": 170,
+      "success": true
+    },
+    {
+      "name": "Get Item by Name (Iron Ore)",
+      "method": "GET",
+      "url": "http://localhost:8000/items/Iron%20Ore",
+      "status": 200,
+      "time_ms": 19.78069300093921,
+      "size": 175,
+      "success": true
+    },
+    {
+      "name": "Get All Resource Nodes",
+      "method": "GET",
+      "url": "http://localhost:8000/resource-nodes",
+      "status": 200,
+      "time_ms": 17.570115000125952,
+      "size": 3404,
+      "success": true
+    },
+    {
+      "name": "Get All Raw Resources",
+      "method": "GET",
+      "url": "http://localhost:8000/raw-resources",
+      "status": 200,
+      "time_ms": 14.84659200104943,
+      "size": 2393,
+      "success": true
+    },
+    {
+      "name": "Get Wiki Reference",
+      "method": "GET",
+      "url": "http://localhost:8000/wiki/Iron%20Ore",
+      "status": 200,
+      "time_ms": 13.09942500120087,
+      "size": 78,
+      "success": true
+    },
+    {
+      "name": "Get All Pipelines",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipelines",
+      "status": 200,
+      "time_ms": 12.99351599845977,
+      "size": 462,
+      "success": true
+    },
+    {
+      "name": "Get Pipeline Mk1",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipelines/1",
+      "status": 200,
+      "time_ms": 12.55928999853495,
+      "size": 228,
+      "success": true
+    },
+    {
+      "name": "Get Pipeline Mk2",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipelines/2",
+      "status": 200,
+      "time_ms": 12.24315400031628,
+      "size": 231,
+      "success": true
+    },
+    {
+      "name": "Get All Pipeline Pumps",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipeline-pumps",
+      "status": 200,
+      "time_ms": 12.15488500020001,
+      "size": 880,
+      "success": true
+    },
+    {
+      "name": "Get Pipeline Pump Mk1",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipeline-pumps/1",
+      "status": 200,
+      "time_ms": 11.940267999307252,
+      "size": 438,
+      "success": true
+    },
+    {
+      "name": "Get Pipeline Pump Mk2",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/pipeline-pumps/2",
+      "status": 200,
+      "time_ms": 9.44189700021525,
+      "size": 439,
+      "success": true
+    },
+    {
+      "name": "Get All Locomotives",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/locomotives",
+      "status": 200,
+      "time_ms": 7.6754620004066965,
+      "size": 380,
+      "success": true
+    },
+    {
+      "name": "Get All Freight Cars",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/freight-cars",
+      "status": 200,
+      "time_ms": 7.779051000397885,
+      "size": 406,
+      "success": true
+    },
+    {
+      "name": "Get All Train Stations",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations",
+      "status": 200,
+      "time_ms": 8.048429999689688,
+      "size": 1362,
+      "success": true
+    },
+    {
+      "name": "Get Train Stations - Solid Type",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations?station_type=solid",
+      "status": 200,
+      "time_ms": 8.112755000183824,
+      "size": 762,
+      "success": true
+    },
+    {
+      "name": "Get Train Stations - Liquid Type",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations?station_type=liquid",
+      "status": 200,
+      "time_ms": 8.401303999562515,
+      "size": 411,
+      "success": true
+    },
+    {
+      "name": "Get Train Stations - Empty Type",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations?station_type=empty",
+      "status": 200,
+      "time_ms": 8.860222000294016,
+      "size": 191,
+      "success": true
+    },
+    {
+      "name": "Get Locomotive by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/locomotives/Electric%20Locomotive",
+      "status": 200,
+      "time_ms": 8.789134999460657,
+      "size": 378,
+      "success": true
+    },
+    {
+      "name": "Get Freight Car by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/freight-cars/Freight%20Car",
+      "status": 200,
+      "time_ms": 9.281219001422869,
+      "size": 404,
+      "success": true
+    },
+    {
+      "name": "Get All Train Signals",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/signals",
+      "status": 200,
+      "time_ms": 8.82064100005664,
+      "size": 417,
+      "success": true
+    },
+    {
+      "name": "Get Train Signals - Block Signal",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/signals?signal_type=Block%20Signal",
+      "status": 200,
+      "time_ms": 8.857806000378332,
+      "size": 143,
+      "success": true
+    },
+    {
+      "name": "Get Train Signal - Block Signal",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/signals/Block%20Signal",
+      "status": 200,
+      "time_ms": 7.641940999747021,
+      "size": 141,
+      "success": true
+    },
+    {
+      "name": "Get Train Signal - Path Signal",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/signals/Path%20Signal",
+      "status": 200,
+      "time_ms": 7.832388000679202,
+      "size": 139,
+      "success": true
+    },
+    {
+      "name": "Get Train Signal - End Stop",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/trains/signals/End%20Stop",
+      "status": 200,
+      "time_ms": 5.786809999335674,
+      "size": 133,
+      "success": true
+    },
+    {
+      "name": "Get Train Station by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations/Train%20Station",
+      "status": 200,
+      "time_ms": 5.422419999376871,
+      "size": 363,
+      "success": true
+    },
+    {
+      "name": "Get Train Station by Name - Fluid Freight Platform",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/train-stations/Fluid%20Freight%20Platform",
+      "status": 200,
+      "time_ms": 7.2899189999589,
+      "size": 409,
+      "success": true
+    },
+    {
+      "name": "Get All Railway Tracks",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/railway-tracks",
+      "status": 200,
+      "time_ms": 6.385026999851107,
+      "size": 248,
+      "success": true
+    },
+    {
+      "name": "Get All Trucks",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/vehicles/trucks",
+      "status": 200,
+      "time_ms": 6.823092999184155,
+      "size": 860,
+      "success": true
+    },
+    {
+      "name": "Get Truck",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/vehicles/trucks/truck",
+      "status": 200,
+      "time_ms": 6.497452000985504,
+      "size": 410,
+      "success": true
+    },
+    {
+      "name": "Get Tractor",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/vehicles/trucks/tractor",
+      "status": 200,
+      "time_ms": 6.527846999233589,
+      "size": 447,
+      "success": true
+    },
+    {
+      "name": "Get Truck Stations",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/truck-stations",
+      "status": 200,
+      "time_ms": 8.239905000664294,
+      "size": 350,
+      "success": true
+    },
+    {
+      "name": "Get All Drones",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/drones",
+      "status": 200,
+      "time_ms": 5.9958059991913615,
+      "size": 454,
+      "success": true
+    },
+    {
+      "name": "Get Drone Stations",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/drone-stations",
+      "status": 200,
+      "time_ms": 6.860527999378974,
+      "size": 481,
+      "success": true
+    },
+    {
+      "name": "Get Drone by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/drones/Drone",
+      "status": 200,
+      "time_ms": 6.228061000001617,
+      "size": 452,
+      "success": true
+    },
+    {
+      "name": "Get All Freight Platforms",
+      "method": "GET",
+      "url": "http://localhost:8000/transportation/freight-platforms",
+      "status": 200,
+      "time_ms": 6.574257000465877,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Production Rate",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/production-rate?recipe=Iron%20Plate",
+      "status": 200,
+      "time_ms": 6.291941999734263,
+      "size": 586,
+      "success": true
+    },
+    {
+      "name": "Production Rate with Overclock",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/production-rate?recipe=Recipe_IronPlate_C&overclock=150",
+      "status": 200,
+      "time_ms": 6.694233999951393,
+      "size": 588,
+      "success": true
+    },
+    {
+      "name": "Buildings Needed",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/buildings-needed?recipe=Iron%20Plate&target_rate=60",
+      "status": 200,
+      "time_ms": 6.460799999331357,
+      "size": 245,
+      "success": true
+    },
+    {
+      "name": "Buildings Needed with Overclock",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/buildings-needed?recipe=Iron%20Plate&target_rate=120&overclock=200",
+      "status": 200,
+      "time_ms": 5.48468499982846,
+      "size": 247,
+      "success": true
+    },
+    {
+      "name": "Production Chain",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/production-chain?item=Heavy%20Modular%20Frame&target_rate=10",
+      "status": 200,
+      "time_ms": 20.118796001042938,
+      "size": 14973,
+      "success": true
+    },
+    {
+      "name": "Production Chain - No Alternates",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/production-chain?item=Iron%20Plate&target_rate=60&include_alternates=false",
+      "status": 200,
+      "time_ms": 6.137243000921444,
+      "size": 1233,
+      "success": true
+    },
+    {
+      "name": "Production Chain - Preferred Recipe",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/production-chain?item=Computer&target_rate=5&preferred_recipe=Alternate:%20Caterium%20Computer",
+      "status": 200,
+      "time_ms": 32.25442099937936,
+      "size": 12381,
+      "success": true
+    },
+    {
+      "name": "Compare Recipes",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/compare-recipes?item=Iron%20Plate",
+      "status": 200,
+      "time_ms": 19.38307300042652,
+      "size": 3815,
+      "success": true
+    },
+    {
+      "name": "Miner Output",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/miner-output?resource=Iron%20Ore&miner_mk=3&purity=pure&overclock=200",
+      "status": 200,
+      "time_ms": 20.14969999981986,
+      "size": 240,
+      "success": true
+    },
+    {
+      "name": "Miner Output - Normal Purity",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/miner-output?resource=Coal&miner_mk=2&purity=normal",
+      "status": 200,
+      "time_ms": 33.73322399966128,
+      "size": 236,
+      "success": true
+    },
+    {
+      "name": "Belt Requirements",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/belt-requirements?throughput=540",
+      "status": 200,
+      "time_ms": 30.088305000390392,
+      "size": 671,
+      "success": true
+    },
+    {
+      "name": "Belt Requirements - High Throughput",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/belt-requirements?throughput=1200",
+      "status": 200,
+      "time_ms": 31.53568999914569,
+      "size": 440,
+      "success": true
+    },
+    {
+      "name": "Perfect Ratios",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/perfect-ratios?item=Iron%20Plate&target_rate=60",
+      "status": 200,
+      "time_ms": 33.54819900050643,
+      "size": 1636,
+      "success": true
+    },
+    {
+      "name": "Perfect Ratios - With Overclock",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/perfect-ratios?item=Heavy%20Modular%20Frame&target_rate=10&allow_overclock=true",
+      "status": 200,
+      "time_ms": 33.60185699966678,
+      "size": 16653,
+      "success": true
+    },
+    {
+      "name": "Optimize 100 Percent",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/optimize-100-percent?item=Iron%20Plate&target_rate=60",
+      "status": 200,
+      "time_ms": 34.29671899903042,
+      "size": 2352,
+      "success": true
+    },
+    {
+      "name": "Optimize 100 Percent - With Overclock",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/optimize-100-percent?item=Computer&target_rate=5&allow_overclock=true",
+      "status": 200,
+      "time_ms": 42.851382999288035,
+      "size": 19371,
+      "success": true
+    },
+    {
+      "name": "Factory Efficiency",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/factory-efficiency?item=Iron%20Plate&target_rate=60",
+      "status": 200,
+      "time_ms": 35.99523100092483,
+      "size": 2144,
+      "success": true
+    },
+    {
+      "name": "Factory Efficiency - Heavy Modular Frame",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/factory-efficiency?item=Heavy%20Modular%20Frame&target_rate=10",
+      "status": 200,
+      "time_ms": 49.47834300037357,
+      "size": 20866,
+      "success": true
+    },
+    {
+      "name": "Building Utilization",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/building-utilization?item=Iron%20Plate&target_rate=60",
+      "status": 200,
+      "time_ms": 49.882139999681385,
+      "size": 1355,
+      "success": true
+    },
+    {
+      "name": "Building Utilization - Computer",
+      "method": "GET",
+      "url": "http://localhost:8000/calculate/building-utilization?item=Computer&target_rate=5",
+      "status": 200,
+      "time_ms": 59.07389600179158,
+      "size": 12637,
+      "success": true
+    },
+    {
+      "name": "Get All Generators",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators",
+      "status": 200,
+      "time_ms": 62.00174299920036,
+      "size": 3046,
+      "success": true
+    },
+    {
+      "name": "Get Generators - By Type (Coal)",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators?generator_type=Coal",
+      "status": 200,
+      "time_ms": 53.50564900072641,
+      "size": 940,
+      "success": true
+    },
+    {
+      "name": "Get Generator by Type (Coal)",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators/Coal",
+      "status": 200,
+      "time_ms": 55.4338120000466,
+      "size": 938,
+      "success": true
+    },
+    {
+      "name": "Get Generator by Type (Nuclear)",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators/Nuclear",
+      "status": 200,
+      "time_ms": 49.471697999251774,
+      "size": 960,
+      "success": true
+    },
+    {
+      "name": "Get Generator by Name - Coal Generator",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators/name/Coal%20Generator",
+      "status": 200,
+      "time_ms": 51.30813499999931,
+      "size": 306,
+      "success": true
+    },
+    {
+      "name": "Get Generator by Name - Biomass",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators/name/Biomass",
+      "status": 200,
+      "time_ms": 40.567255000496516,
+      "size": 1144,
+      "success": true
+    },
+    {
+      "name": "Get Generators by Tier",
+      "method": "GET",
+      "url": "http://localhost:8000/power/generators/tier/3",
+      "status": 200,
+      "time_ms": 42.80153600120684,
+      "size": 940,
+      "success": true
+    },
+    {
+      "name": "Get Power Storage",
+      "method": "GET",
+      "url": "http://localhost:8000/power/storage",
+      "status": 200,
+      "time_ms": 36.346319000585936,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Power Storage by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/power/storage/Power%20Storage",
+      "status": 200,
+      "time_ms": 34.129072999348864,
+      "size": 241,
+      "success": true
+    },
+    {
+      "name": "Get All Power Poles",
+      "method": "GET",
+      "url": "http://localhost:8000/power/poles",
+      "status": 200,
+      "time_ms": 30.663568000818486,
+      "size": 1053,
+      "success": true
+    },
+    {
+      "name": "Get Power Pole Mk1",
+      "method": "GET",
+      "url": "http://localhost:8000/power/poles/1",
+      "status": 200,
+      "time_ms": 27.116256000226713,
+      "size": 349,
+      "success": true
+    },
+    {
+      "name": "Get Power Pole Mk2",
+      "method": "GET",
+      "url": "http://localhost:8000/power/poles/2",
+      "status": 200,
+      "time_ms": 24.342730999705964,
+      "size": 349,
+      "success": true
+    },
+    {
+      "name": "Get Power Pole Mk3",
+      "method": "GET",
+      "url": "http://localhost:8000/power/poles/3",
+      "status": 200,
+      "time_ms": 19.99895200060564,
+      "size": 351,
+      "success": true
+    },
+    {
+      "name": "Get Power Pole by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/power/poles/name/Power%20Pole%20Mk.1",
+      "status": 200,
+      "time_ms": 16.819868000311544,
+      "size": 349,
+      "success": true
+    },
+    {
+      "name": "Get All Splitters",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/splitters",
+      "status": 200,
+      "time_ms": 17.460713999753352,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Splitters - By Type (Smart)",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/splitters?splitter_type=Smart",
+      "status": 200,
+      "time_ms": 17.360746998747345,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Splitter by Name - Conveyor Splitter",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/splitters/Conveyor%20Splitter",
+      "status": 200,
+      "time_ms": 18.235322000691667,
+      "size": 251,
+      "success": true
+    },
+    {
+      "name": "Get Splitter by Name - Smart",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/splitters/Smart",
+      "status": 200,
+      "time_ms": 21.35132799958228,
+      "size": 253,
+      "success": true
+    },
+    {
+      "name": "Get All Mergers",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/mergers",
+      "status": 200,
+      "time_ms": 24.46854400113807,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Merger by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/mergers/Conveyor%20Merger",
+      "status": 200,
+      "time_ms": 26.676424000470433,
+      "size": 221,
+      "success": true
+    },
+    {
+      "name": "Get All Storage Containers",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/storage",
+      "status": 200,
+      "time_ms": 29.95698900122079,
+      "size": 360,
+      "success": true
+    },
+    {
+      "name": "Get Storage Containers - By Type (Industrial)",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/storage?container_type=Industrial",
+      "status": 200,
+      "time_ms": 33.05861499939056,
+      "size": 360,
+      "success": true
+    },
+    {
+      "name": "Get Storage Container by Name - Storage Container",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/storage/Storage%20Container",
+      "status": 200,
+      "time_ms": 31.73622800022713,
+      "size": 242,
+      "success": true
+    },
+    {
+      "name": "Get Storage Container by Name - Industrial",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/storage/Industrial",
+      "status": 200,
+      "time_ms": 31.809465001060744,
+      "size": 358,
+      "success": true
+    },
+    {
+      "name": "Get All Fluid Buffers",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/fluid-buffers",
+      "status": 200,
+      "time_ms": 31.9796639996639,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get All Valves",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/valves",
+      "status": 200,
+      "time_ms": 32.243649000520236,
+      "size": 264,
+      "success": true
+    },
+    {
+      "name": "Get Valves - By Type (Inverted)",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/valves?valve_type=Inverted",
+      "status": 200,
+      "time_ms": 31.94168099980743,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Valve by Name - Valve",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/valves/Valve",
+      "status": 200,
+      "time_ms": 31.665815999076585,
+      "size": 262,
+      "success": true
+    },
+    {
+      "name": "Get Valve by Name - Inverted",
+      "method": "GET",
+      "url": "http://localhost:8000/logistics/valves/Inverted",
+      "status": 200,
+      "time_ms": 32.01338500002748,
+      "size": 215,
+      "success": true
+    },
+    {
+      "name": "Get All Water Extractors",
+      "method": "GET",
+      "url": "http://localhost:8000/extractors/water-extractors",
+      "status": 200,
+      "time_ms": 28.736928999933298,
+      "size": 452,
+      "success": true
+    },
+    {
+      "name": "Get Water Extractor by Name",
+      "method": "GET",
+      "url": "http://localhost:8000/extractors/water-extractors/Water%20Extractor",
+      "status": 200,
+      "time_ms": 25.503500999548123,
+      "size": 450,
+      "success": true
+    },
+    {
+      "name": "Get All Resource Well Extractors",
+      "method": "GET",
+      "url": "http://localhost:8000/extractors/resource-well-extractors",
+      "status": 200,
+      "time_ms": 23.250673000802635,
+      "size": 403,
+      "success": true
+    },
+    {
+      "name": "Get Resource Well Extractors - By Type (Oil)",
+      "method": "GET",
+      "url": "http://localhost:8000/extractors/resource-well-extractors?resource_type=Oil",
+      "status": 200,
+      "time_ms": 21.24739499959105,
+      "size": 403,
+      "success": true
+    },
+    {
+      "name": "Get All Milestones",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones",
+      "status": 200,
+      "time_ms": 18.41325900022639,
+      "size": 27106,
+      "success": true
+    },
+    {
+      "name": "Get Milestones - By Tier",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones?tier=3",
+      "status": 200,
+      "time_ms": 15.459133001058945,
+      "size": 2453,
+      "success": true
+    },
+    {
+      "name": "Get Milestones - By Phase",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones?phase=2",
+      "status": 200,
+      "time_ms": 13.356288000068162,
+      "size": 3081,
+      "success": true
+    },
+    {
+      "name": "Get Milestones by Tier (Path Parameter)",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones/3",
+      "status": 200,
+      "time_ms": 9.589422001226922,
+      "size": 2453,
+      "success": true
+    },
+    {
+      "name": "Get Milestone by Name - Coal Power",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones/name/Coal%20Power",
+      "status": 200,
+      "time_ms": 9.490606000326807,
+      "size": 543,
+      "success": true
+    },
+    {
+      "name": "Get Milestone by Name - Quantum Encoding",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/milestones/name/Quantum%20Encoding",
+      "status": 200,
+      "time_ms": 9.620540000469191,
+      "size": 733,
+      "success": true
+    },
+    {
+      "name": "Get All Unlocks",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks",
+      "status": 200,
+      "time_ms": 108.79441399993084,
+      "size": 175039,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks - By Type (Building)",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks?unlock_type=building",
+      "status": 200,
+      "time_ms": 200.78270799967868,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks - By Tier",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks?tier=4",
+      "status": 200,
+      "time_ms": 295.8217979994515,
+      "size": 5689,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks - By Milestone",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks?milestone=Coal%20Power",
+      "status": 200,
+      "time_ms": 391.13853500020923,
+      "size": 1030,
+      "success": true
+    },
+    {
+      "name": "Get Unlock by Name - Constructor",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks/Constructor",
+      "status": 200,
+      "time_ms": 485.614199000338,
+      "size": 148,
+      "success": true
+    },
+    {
+      "name": "Get Unlock by Name - Iron Plate",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks/Iron%20Plate",
+      "status": 200,
+      "time_ms": 679.9276589990768,
+      "size": 148,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks by Type - Building",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks/type/building",
+      "status": 200,
+      "time_ms": 583.356149998508,
+      "size": 2,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks by Type - Recipe",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks/type/recipe",
+      "status": 200,
+      "time_ms": 780.38595200087,
+      "size": 161570,
+      "success": true
+    },
+    {
+      "name": "Get Unlocks by Type - Schematic",
+      "method": "GET",
+      "url": "http://localhost:8000/progression/unlocks/type/schematic",
+      "status": 200,
+      "time_ms": 780.1009550003073,
+      "size": 13470,
+      "success": true
+    },
+    {
+      "name": "Swagger UI",
+      "method": "GET",
+      "url": "http://localhost:8000/docs",
+      "status": 200,
+      "time_ms": 686.2790180002776,
+      "size": 950,
+      "success": true
+    },
+    {
+      "name": "ReDoc",
+      "method": "GET",
+      "url": "http://localhost:8000/redoc",
+      "status": 200,
+      "time_ms": 590.4476209998393,
+      "size": 907,
+      "success": true
+    },
+    {
+      "name": "OpenAPI JSON",
+      "method": "GET",
+      "url": "http://localhost:8000/openapi.json",
+      "status": 200,
+      "time_ms": 495.5293429993617,
+      "size": 73673,
+      "success": true
+    }
+  ]
+}

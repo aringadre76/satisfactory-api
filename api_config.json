@@ -1,0 +1,353 @@
+{
+  "api": {
+    "base_url": "http://localhost:8000",
+    "port": 8000,
+    "host": "0.0.0.0",
+    "description": "Satisfactory Game Data API configuration"
+  },
+  "endpoints": {
+    "root": {
+      "method": "GET",
+      "path": "/",
+      "description": "Root endpoint returning API information"
+    },
+    "miners": {
+      "base_path": "/miners",
+      "endpoints": [
+        {
+          "name": "Get All Miners",
+          "method": "GET",
+          "path": "/miners",
+          "description": "Get all miner specifications"
+        },
+        {
+          "name": "Get Miner by Mk",
+          "method": "GET",
+          "path": "/miners/{mk}",
+          "description": "Get specific miner (mk: 1, 2, or 3)",
+          "examples": [
+            "/miners/1",
+            "/miners/2",
+            "/miners/3"
+          ]
+        }
+      ]
+    },
+    "belts": {
+      "base_path": "/belts",
+      "endpoints": [
+        {
+          "name": "Get All Belts",
+          "method": "GET",
+          "path": "/belts",
+          "description": "Get all conveyor belt specifications"
+        },
+        {
+          "name": "Get Belt by Mk",
+          "method": "GET",
+          "path": "/belts/{mk}",
+          "description": "Get specific belt (mk: 1-6)",
+          "examples": [
+            "/belts/1",
+            "/belts/2",
+            "/belts/3",
+            "/belts/4",
+            "/belts/5",
+            "/belts/6"
+          ]
+        }
+      ]
+    },
+    "recipes": {
+      "base_path": "/recipes",
+      "endpoints": [
+        {
+          "name": "Get All Recipes",
+          "method": "GET",
+          "path": "/recipes",
+          "description": "Get all recipes including alternate recipes",
+          "query_parameters": [
+            {
+              "name": "alternate_only",
+              "type": "boolean",
+              "optional": true,
+              "description": "Filter to only alternate recipes"
+            },
+            {
+              "name": "building",
+              "type": "string",
+              "optional": true,
+              "description": "Filter by building type (e.g., Constructor, Assembler, Manufacturer)"
+            }
+          ],
+          "examples": [
+            "/recipes",
+            "/recipes?alternate_only=true",
+            "/recipes?building=Constructor",
+            "/recipes?alternate_only=true&building=Assembler"
+          ]
+        },
+        {
+          "name": "Get Recipe by Name",
+          "method": "GET",
+          "path": "/recipes/{recipe_name}",
+          "description": "Get specific recipe by class name or display name (case-insensitive)",
+          "examples": [
+            "/recipes/Recipe_IronRod_C",
+            "/recipes/Iron%20Rod",
+            "/recipes/Alternate:%20Pure%20Iron%20Ingot"
+          ]
+        }
+      ]
+    },
+    "buildings": {
+      "base_path": "/buildings",
+      "endpoints": [
+        {
+          "name": "Get All Buildings",
+          "method": "GET",
+          "path": "/buildings",
+          "description": "Get all production buildings",
+          "query_parameters": [
+            {
+              "name": "building_type",
+              "type": "string",
+              "optional": true,
+              "description": "Filter by building type (e.g., Constructor, Assembler, Manufacturer, Smelter, Foundry, Refinery, Blender, ParticleAccelerator, Packager)"
+            }
+          ],
+          "examples": [
+            "/buildings",
+            "/buildings?building_type=Constructor"
+          ]
+        },
+        {
+          "name": "Get Building by Type",
+          "method": "GET",
+          "path": "/buildings/{building_type}",
+          "description": "Get specific building by type (case-insensitive)",
+          "examples": [
+            "/buildings/Constructor",
+            "/buildings/assembler",
+            "/buildings/Manufacturer"
+          ]
+        }
+      ]
+    },
+    "items": {
+      "base_path": "/items",
+      "endpoints": [
+        {
+          "name": "Get All Items",
+          "method": "GET",
+          "path": "/items",
+          "description": "Get all items (raw resources, components, products, equipment, building parts)",
+          "query_parameters": [
+            {
+              "name": "item_type",
+              "type": "string",
+              "optional": true,
+              "description": "Filter by item type: raw_resource, component, equipment, building_part"
+            }
+          ],
+          "examples": [
+            "/items",
+            "/items?item_type=component",
+            "/items?item_type=raw_resource"
+          ]
+        },
+        {
+          "name": "Get Item by Name",
+          "method": "GET",
+          "path": "/items/{item_name}",
+          "description": "Get specific item by class name or display name (case-insensitive)",
+          "examples": [
+            "/items/Desc_IronPlate_C",
+            "/items/Iron%20Plate",
+            "/items/Iron%20Ore"
+          ]
+        }
+      ]
+    },
+    "resources": {
+      "base_path": "",
+      "endpoints": [
+        {
+          "name": "Get All Resource Nodes",
+          "method": "GET",
+          "path": "/resource-nodes",
+          "description": "Get all resource node types with purity levels"
+        },
+        {
+          "name": "Get All Raw Resources",
+          "method": "GET",
+          "path": "/raw-resources",
+          "description": "Get all raw resource definitions"
+        },
+        {
+          "name": "Get Wiki Reference",
+          "method": "GET",
+          "path": "/wiki/{item}",
+          "description": "Get wiki reference URL for an item",
+          "examples": [
+            "/wiki/iron_ore",
+            "/wiki/copper_ore",
+            "/wiki/limestone"
+          ]
+        }
+      ]
+    },
+    "documentation": {
+      "base_path": "",
+      "endpoints": [
+        {
+          "name": "Swagger UI",
+          "method": "GET",
+          "path": "/docs",
+          "description": "Swagger UI interactive API documentation"
+        },
+        {
+          "name": "ReDoc",
+          "method": "GET",
+          "path": "/redoc",
+          "description": "ReDoc interactive API documentation"
+        },
+        {
+          "name": "OpenAPI JSON",
+          "method": "GET",
+          "path": "/openapi.json",
+          "description": "OpenAPI 3.0 specification in JSON format"
+        }
+      ]
+    }
+  },
+  "postman": {
+    "collection_id": "374c2be0-6c6f-404c-bb68-356b61c83bbc",
+    "collection_uid": "37592715-374c2be0-6c6f-404c-bb68-356b61c83bbc",
+    "collection_name": "Satisfactory API - All Endpoints",
+    "workspace_id": "0faa1100-0e84-4676-8697-f1348100f9d6",
+    "variables": {
+      "base_url": "http://localhost:8000",
+      "wiki_item": "iron_ore"
+    }
+  },
+  "testing": {
+    "instructions": [
+      "1. Ensure the API is running: python3 run.sh or uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000",
+      "2. Import the postman_collection.json into Postman",
+      "3. Update the base_url variable if your API is running on a different port",
+      "4. Run the collection or individual requests to test all endpoints",
+      "5. Check responses for proper data structure and status codes"
+    ],
+    "expected_status_codes": {
+      "success": 200,
+      "not_found": 404,
+      "server_error": 500
+    },
+    "test_scenarios": [
+      {
+        "name": "Root Endpoint",
+        "endpoint": "GET /",
+        "expected_fields": ["message", "version", "docs"]
+      },
+      {
+        "name": "Get All Miners",
+        "endpoint": "GET /miners",
+        "expected_fields": ["mk", "className", "displayName"]
+      },
+      {
+        "name": "Get Specific Miner",
+        "endpoint": "GET /miners/1",
+        "expected_fields": ["mk", "className", "displayName", "extractCycleTime", "itemsPerCycle"]
+      },
+      {
+        "name": "Get All Belts",
+        "endpoint": "GET /belts",
+        "expected_fields": ["mk", "className", "displayName", "speed"]
+      },
+      {
+        "name": "Get Specific Belt",
+        "endpoint": "GET /belts/1",
+        "expected_fields": ["mk", "className", "displayName", "speed"]
+      },
+      {
+        "name": "Get All Recipes",
+        "endpoint": "GET /recipes",
+        "expected_fields": ["className", "displayName", "isAlternate", "ingredients", "products"]
+      },
+      {
+        "name": "Get Recipes with Filters",
+        "endpoint": "GET /recipes?alternate_only=true&building=Constructor",
+        "expected_fields": ["className", "displayName", "isAlternate"]
+      },
+      {
+        "name": "Get Recipe by Name",
+        "endpoint": "GET /recipes/Iron%20Rod",
+        "expected_fields": ["className", "displayName", "ingredients", "products"]
+      },
+      {
+        "name": "Get All Buildings",
+        "endpoint": "GET /buildings",
+        "expected_fields": ["className", "displayName", "buildingType", "powerConsumption"]
+      },
+      {
+        "name": "Get Buildings by Type",
+        "endpoint": "GET /buildings?building_type=Constructor",
+        "expected_fields": ["className", "displayName", "buildingType"]
+      },
+      {
+        "name": "Get Building by Type",
+        "endpoint": "GET /buildings/Constructor",
+        "expected_fields": ["className", "displayName", "buildingType"]
+      },
+      {
+        "name": "Get All Items",
+        "endpoint": "GET /items",
+        "expected_fields": ["className", "displayName", "itemType"]
+      },
+      {
+        "name": "Get Items by Type",
+        "endpoint": "GET /items?item_type=component",
+        "expected_fields": ["className", "displayName", "itemType"]
+      },
+      {
+        "name": "Get Item by Name",
+        "endpoint": "GET /items/Iron%20Plate",
+        "expected_fields": ["className", "displayName", "itemType"]
+      },
+      {
+        "name": "Get Resource Nodes",
+        "endpoint": "GET /resource-nodes",
+        "expected_fields": ["resourceType", "purity", "multiplier", "displayName"]
+      },
+      {
+        "name": "Get Raw Resources",
+        "endpoint": "GET /raw-resources",
+        "expected_fields": ["className", "displayName", "resourceType"]
+      },
+      {
+        "name": "Get Wiki Reference",
+        "endpoint": "GET /wiki/iron_ore",
+        "expected_fields": ["item", "wiki_url"]
+      },
+      {
+        "name": "Documentation Endpoints",
+        "endpoints": [
+          "GET /docs (Swagger UI)",
+          "GET /redoc (ReDoc)",
+          "GET /openapi.json (OpenAPI spec)"
+        ]
+      },
+      {
+        "name": "Error Cases",
+        "endpoints": [
+          "GET /miners/99 (should return 404)",
+          "GET /belts/99 (should return 404)",
+          "GET /recipes/InvalidRecipe (should return 404)",
+          "GET /buildings/InvalidBuilding (should return 404)",
+          "GET /items/InvalidItem (should return 404)"
+        ]
+      }
+    ]
+  }
+}
