@@ -31,7 +31,7 @@ def run_collection(collection_path: Path, report_path: Path, base_url: str, time
         collection = json.load(f)
 
     variables = {v["key"]: v["value"] for v in collection.get("variable", [])}
-    base = variables.get("base_url", base_url) or base_url
+    base = base_url or variables.get("base_url") or "http://localhost:8000"
 
     # Flatten items with optional folder filtering
     def flatten(items):

@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 DESCRIPTOR_FILE = Path(__file__).parent.parent.parent.parent / "Docs" / "en-US.json"
 
+PAGINATION_LIMIT_MAX = 1000
+
 try:
     parser = GameDescriptorParser(DESCRIPTOR_FILE)
 except Exception as e:
@@ -19,7 +21,9 @@ except Exception as e:
 @router.get("", response_model=List[Recipe])
 async def get_recipes(
     alternate_only: Optional[bool] = Query(None, description="Filter to only alternate recipes"),
-    building: Optional[str] = Query(None, description="Filter by building type (e.g., Constructor, Assembler)")
+    building: Optional[str] = Query(None, description="Filter by building type (e.g., Constructor, Assembler)"),
+    limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
+    offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
     if parser is None:
         raise HTTPException(status_code=500, detail="Game descriptor data not available")
@@ -59,6 +63,11 @@ async def get_recipes(
                 variablePowerConsumptionFactor=recipe_data.get("variable_power_consumption_factor")
             )
             recipes.append(recipe_obj)
+        
+        if offset is not None:
+            recipes = recipes[offset:]
+        if limit is not None:
+            recipes = recipes[:limit]
         
         return recipes
     except Exception as e:

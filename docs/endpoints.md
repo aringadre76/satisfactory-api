@@ -5,11 +5,24 @@
 http://localhost:8000
 ```
 
+Live: `https://satisfactory-api-yfw1.onrender.com` (same endpoints, no auth).
+
 ## Authentication
 No authentication required.
 
 ## Test Status
-All endpoints have been tested and verified as of 2025-10-31. Test results: 134 endpoints tested, 134 successful (100.0% pass rate).
+See `docs/endpoint_test_report.md` for current test results and pass rates. The same Postman collection tests can be run against the live deployment with `python3 scripts/run_postman_collection_tests.py --base-url https://satisfactory-api-yfw1.onrender.com`.
+
+## List endpoints and pagination
+
+**Endpoints with optional pagination:** `GET /recipes`, `GET /items`, and `GET /progression/unlocks` accept optional `limit` and `offset` query parameters. Pagination is applied after any filters (e.g. `building`, `item_type`, `unlock_type`). If neither `limit` nor `offset` is provided, the full filtered list is returned.
+
+- **limit** (optional, integer 1–1000): Maximum number of results to return.
+- **offset** (optional, integer ≥ 0): Number of results to skip.
+
+Example: `GET /recipes?building=Constructor&limit=20&offset=40` returns up to 20 recipes produced in Constructor, skipping the first 40.
+
+**All other list endpoints** (e.g. `GET /miners`, `GET /belts`, `GET /buildings`, `GET /resource-nodes`) return the full list only. Use existing query or path filters where available to narrow results (e.g. `?building_type=Assembler` on `/buildings`).
 
 ---
 
@@ -26,6 +39,47 @@ Get API information.
   "message": "Satisfactory Game Data API",
   "version": "1.0.0",
   "docs": "/docs"
+}
+```
+
+---
+
+### Health and readiness
+
+Use these for load balancers and orchestration (Render, Railway, Fly.io, Kubernetes, etc.).
+
+#### `GET /health`
+Returns 200 when the application process is running. No dependency checks.
+
+**Response:** `200 OK`
+```json
+{
+  "status": "ok"
+}
+```
+
+#### `GET /ready`
+Returns 200 when the application is running and the game descriptor file is present and loadable. Returns 503 if the descriptor file is missing or cannot be parsed.
+
+**Response (ready):** `200 OK`
+```json
+{
+  "status": "ready"
+}
+```
+
+**Response (not ready):** `503 Service Unavailable`
+```json
+{
+  "status": "not ready",
+  "detail": "Game descriptor file not found"
+}
+```
+Or when the file exists but cannot be parsed:
+```json
+{
+  "status": "not ready",
+  "detail": "<error message>"
 }
 ```
 
@@ -131,6 +185,8 @@ Get all recipes including alternate recipes.
 **Query Parameters:**
 - `alternate_only` (optional, boolean): Filter to only alternate recipes
 - `building` (optional, string): Filter by building type (e.g., "Constructor", "Assembler", "Manufacturer")
+- `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
+- `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
 **Response:** `List[Recipe]`
 
@@ -140,6 +196,8 @@ GET /recipes
 GET /recipes?alternate_only=true
 GET /recipes?building=Constructor
 GET /recipes?alternate_only=false&building=Assembler
+GET /recipes?limit=50&offset=0
+GET /recipes?building=Assembler&limit=20&offset=40
 ```
 
 **Response Model:**
@@ -254,6 +312,8 @@ Get all items (raw resources, components, products, equipment, building parts).
   - `component`: Components (Iron Plate, Iron Rod, Wire, etc.)
   - `equipment`: Equipment items
   - `building_part`: Building parts
+- `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
+- `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
 **Response:** `List[Item]`
 
@@ -262,6 +322,8 @@ Get all items (raw resources, components, products, equipment, building parts).
 GET /items
 GET /items?item_type=component
 GET /items?item_type=raw_resource
+GET /items?limit=100&offset=0
+GET /items?item_type=component&limit=50
 ```
 
 **Response Model:**
@@ -2349,7 +2411,7 @@ GET /transportation/drones/Drone
 ### Freight Platforms
 
 #### `GET /transportation/freight-platforms`
-Get freight platform information for trains.
+Get freight platform information for trains. Data is read from the game descriptor (e.g. `Build_TrainDockingStation_C`, `Build_TrainDockingStationLiquid_C`). The response may be an empty list if the descriptor does not expose these classes or uses a different structure.
 
 **Response:** `List[FreightPlatform]`
 
@@ -2362,11 +2424,20 @@ GET /transportation/freight-platforms
 ```json
 [
   {
-    "className": "Build_FreightPlatform_C",
+    "className": "Build_TrainDockingStation_C",
     "displayName": "Freight Platform",
-    "description": "Platform for loading/unloading freight cars...",
-    "powerConsumption": 0.0,
-    "storageSlots": 32,
+    "description": "Loads and unloads Freight Cars that stop at the Freight Platform...",
+    "powerConsumption": 50.0,
+    "storageSlots": 48,
+    "inputRate": null,
+    "outputRate": null
+  },
+  {
+    "className": "Build_TrainDockingStationLiquid_C",
+    "displayName": "Fluid Freight Platform",
+    "description": "Loads and unloads Freight Cars that stop at the Freight Platform...",
+    "powerConsumption": 50.0,
+    "storageSlots": 1,
     "inputRate": null,
     "outputRate": null
   }
@@ -2465,6 +2536,8 @@ Get all unlock information (buildings, recipes, schematics).
 - `unlock_type` (optional, string): Filter by unlock type (building, recipe, schematic)
 - `tier` (optional, integer): Filter by tier number
 - `milestone` (optional, string): Filter by milestone name (case-insensitive)
+- `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
+- `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
 **Response:** `List[Unlock]`
 
@@ -2474,6 +2547,8 @@ GET /progression/unlocks
 GET /progression/unlocks?unlock_type=building
 GET /progression/unlocks?tier=3
 GET /progression/unlocks?milestone=Coal%20Power
+GET /progression/unlocks?limit=50&offset=0
+GET /progression/unlocks?unlock_type=recipe&limit=30
 ```
 
 **Response Model:**

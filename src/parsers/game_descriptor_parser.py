@@ -594,25 +594,28 @@ class GameDescriptorParser:
     
     def extract_freight_platforms(self) -> List[Dict[str, Any]]:
         platforms = []
-        build_class_name = "Build_FreightPlatform_C"
-        desc_class_name = "Desc_FreightPlatform_C"
-        
-        build_class = self._get_class_by_name(build_class_name)
-        
-        if build_class:
+        configs = [
+            ("Build_TrainDockingStation_C", "Desc_TrainDockingStation_C"),
+            ("Build_TrainDockingStationLiquid_C", "Desc_TrainDockingStationLiquid_C"),
+        ]
+        for build_class_name, desc_class_name in configs:
+            build_class = self._get_class_by_name(build_class_name)
+            if not build_class:
+                continue
             display_info = self._get_display_info(desc_class_name)
-            
+            storage_x = self._parse_int(build_class.get("mStorageSizeX", "0"))
+            storage_y = self._parse_int(build_class.get("mStorageSizeY", "0"))
+            storage_slots = storage_x * storage_y if (storage_x and storage_y) else (1 if "Liquid" in build_class_name else 32)
             platform_data = {
                 "class_name": build_class.get("ClassName", ""),
                 "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
                 "description": build_class.get("mDescription") or display_info.get("description", ""),
                 "power_consumption": self._parse_float(build_class.get("mPowerConsumption", "0")),
-                "storage_slots": 32,
+                "storage_slots": storage_slots,
                 "input_rate": None,
                 "output_rate": None
             }
             platforms.append(platform_data)
-        
         return platforms
     
     def extract_power_generators(self) -> List[Dict[str, Any]]:

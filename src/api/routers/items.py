@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 DESCRIPTOR_FILE = Path(__file__).parent.parent.parent.parent / "Docs" / "en-US.json"
 
+PAGINATION_LIMIT_MAX = 1000
+
 try:
     parser = GameDescriptorParser(DESCRIPTOR_FILE)
 except Exception as e:
@@ -18,7 +20,9 @@ except Exception as e:
 
 @router.get("", response_model=List[Item])
 async def get_items(
-    item_type: Optional[str] = Query(None, description="Filter by item type (raw_resource, component, equipment, building_part)")
+    item_type: Optional[str] = Query(None, description="Filter by item type (raw_resource, component, equipment, building_part)"),
+    limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
+    offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
     if parser is None:
         raise HTTPException(status_code=500, detail="Game descriptor data not available")
@@ -27,9 +31,16 @@ async def get_items(
         items_data = parser.extract_all_items()
         
         if item_type:
-            items_data = [i for i in items_data if i["item_type"] == item_type]
+            items_data = [i for i in items_data if (i.get("item_type") or "").lower() == (item_type or "").lower()]
         
-        return [Item(**item) for item in items_data]
+        items = [Item(**item) for item in items_data]
+        
+        if offset is not None:
+            items = items[offset:]
+        if limit is not None:
+            items = items[:limit]
+        
+        return items
     except Exception as e:
         logger.error(f"Error extracting items: {e}")
         raise HTTPException(status_code=500, detail="Failed to extract item data")

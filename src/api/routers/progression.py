@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 DESCRIPTOR_FILE = Path(__file__).parent.parent.parent.parent / "Docs" / "en-US.json"
 
+PAGINATION_LIMIT_MAX = 1000
+
 try:
     parser = GameDescriptorParser(DESCRIPTOR_FILE)
 except Exception as e:
@@ -83,7 +85,9 @@ async def get_milestone_by_name(milestone_name: str):
 async def get_unlocks(
     unlock_type: Optional[str] = Query(None, description="Filter by unlock type (building, recipe, schematic)"),
     tier: Optional[int] = Query(None, description="Filter by tier number"),
-    milestone: Optional[str] = Query(None, description="Filter by milestone name")
+    milestone: Optional[str] = Query(None, description="Filter by milestone name"),
+    limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
+    offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
     if parser is None:
         raise HTTPException(status_code=500, detail="Game descriptor data not available")
@@ -100,7 +104,14 @@ async def get_unlocks(
         if milestone:
             unlocks_data = [u for u in unlocks_data if u.get("milestone", "").lower() == milestone.lower()]
         
-        return [Unlock(**unlock) for unlock in unlocks_data]
+        unlocks = [Unlock(**unlock) for unlock in unlocks_data]
+        
+        if offset is not None:
+            unlocks = unlocks[offset:]
+        if limit is not None:
+            unlocks = unlocks[:limit]
+        
+        return unlocks
     except Exception as e:
         logger.error(f"Error extracting unlocks: {e}")
         raise HTTPException(status_code=500, detail="Failed to extract unlock data")

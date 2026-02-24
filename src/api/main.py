@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pathlib import Path
 from src.api.routers import miners, belts, resources, recipes, buildings, items, calculations, transportation, power, logistics, extractors, progression
+from src.parsers.game_descriptor_parser import GameDescriptorParser
 
 app = FastAPI(
     title="Satisfactory Game Data API",
@@ -29,6 +32,8 @@ app.include_router(logistics.router, prefix="/logistics", tags=["logistics"])
 app.include_router(extractors.router, prefix="/extractors", tags=["extractors"])
 app.include_router(progression.router, prefix="/progression", tags=["progression"])
 
+DESCRIPTOR_FILE = Path(__file__).resolve().parent.parent.parent / "Docs" / "en-US.json"
+
 @app.get("/")
 async def root():
     return {
@@ -37,3 +42,22 @@ async def root():
         "docs": "/docs"
     }
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+@app.get("/ready")
+async def ready():
+    if not DESCRIPTOR_FILE.exists():
+        return JSONResponse(
+            status_code=503,
+            content={"status": "not ready", "detail": "Game descriptor file not found"}
+        )
+    try:
+        GameDescriptorParser(DESCRIPTOR_FILE)
+        return {"status": "ready"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "not ready", "detail": str(e)}
+        )

@@ -33,7 +33,13 @@ uvicorn src.api.main:app --reload
 - Open your browser to `http://localhost:8000/docs`
 - This gives you a visual interface to try all the endpoints
 
+Alternatively, run `./run.sh` (uses `PORT` from the environment or 8000).
+
 That's it! Your API is running and ready to use.
+
+## Live API
+
+A deployed instance is available at `https://satisfactory-api-yfw1.onrender.com` (no auth). Use `/docs` there for interactive docs. Full endpoint list and test status: see `docs/endpoints.md`.
 
 ## What Can I Do With This API?
 
@@ -51,7 +57,11 @@ Use the calculation endpoints to figure out building requirements, production ch
 
 ## Available Endpoints
 
-The API is organized into logical groups:
+Full reference with request/response details: `docs/endpoints.md`. Summary by group:
+
+### Health and readiness
+- `GET /health` - Liveness; returns 200 when the app is running
+- `GET /ready` - Readiness; returns 200 when the app and game descriptor are loadable (503 otherwise)
 
 ### Miners
 - `GET /miners` - All miners (Mk1, Mk2, Mk3)
@@ -65,6 +75,7 @@ The API is organized into logical groups:
 - `GET /recipes` - All recipes in the game
   - Add `?alternate_only=true` to see only alternate recipes
   - Add `?building=Constructor` to filter by building type
+  - Optional `?limit=` and `?offset=` for pagination (see docs/endpoints.md)
 - `GET /recipes/{recipe_name}` - Get a specific recipe
 
 ### Buildings
@@ -75,6 +86,7 @@ The API is organized into logical groups:
 ### Items
 - `GET /items` - All items (resources, components, equipment)
   - Add `?item_type=component` to filter by type
+  - Optional `?limit=` and `?offset=` for pagination (see docs/endpoints.md)
 - `GET /items/{item_name}` - Specific item information
 
 ### Transportation
@@ -110,6 +122,35 @@ Get information about all transportation methods:
 - `GET /raw-resources` - All raw resource definitions
 - `GET /wiki/{item}` - Get wiki link for any item
 
+### Calculations
+- `GET /calculate/production-rate` - Production rate for a recipe
+- `GET /calculate/buildings-needed` - Buildings needed for a target rate
+- `GET /calculate/production-chain` - Full production chain
+- `GET /calculate/compare-recipes` - Compare recipes
+- `GET /calculate/miner-output` - Miner output by node and purity
+- `GET /calculate/belt-requirements` - Belt requirements for a rate
+- Additional calculation endpoints: see `docs/endpoints.md`
+
+### Power
+- `GET /power/generators` - Power generator specs
+- `GET /power/storage` - Power storage (e.g. batteries)
+- `GET /power/poles` - Power pole types
+
+### Logistics
+- `GET /logistics/splitters` - Conveyor splitters
+- `GET /logistics/mergers` - Conveyor mergers
+- `GET /logistics/storage` - Storage containers
+- `GET /logistics/fluid-buffers` - Fluid buffers
+- `GET /logistics/valves` - Valves
+
+### Extractors
+- `GET /extractors/water-extractors` - Water extractors
+- `GET /extractors/resource-well-extractors` - Resource well extractors
+
+### Progression
+- `GET /progression/milestones` - Milestones
+- `GET /progression/unlocks` - Unlocks (optional `?limit=` and `?offset=` for pagination; see docs/endpoints.md)
+
 ## Example Usage
 
 **Get all recipes:**
@@ -141,23 +182,41 @@ When the API is running, you can use the built-in documentation:
 
 Both are automatically generated and always up-to-date with the API.
 
+## Testing
+
+Run the Postman-based endpoint tests (requires the server to be running, or use the live API):
+
+```bash
+python3 scripts/run_postman_collection_tests.py
+python3 scripts/run_postman_collection_tests.py --base-url https://satisfactory-api-yfw1.onrender.com
+```
+
+The collection is in `docs/postman_collection.json`. Results are written to `docs/endpoint_test_report.md` and `docs/endpoint_test_report.json`.
+
 ## Project Structure
 
 ```
 satisfactory-api/
 ├── src/
 │   ├── api/
-│   │   ├── main.py              # FastAPI application entry point
-│   │   └── routers/              # All API route handlers
+│   │   ├── main.py
+│   │   └── routers/
 │   ├── parsers/
-│   │   └── game_descriptor_parser.py  # Parses game data files
-│   ├── models/                   # Data structure definitions
-│   └── utils/                    # Helper functions
-├── Docs/                         # Game data files go here
-│   └── en-US.json               # Main game descriptor file
-├── docs/                         # Documentation files
-├── scripts/                      # Utility scripts
-└── requirements.txt             # Python dependencies
+│   ├── models/
+│   └── utils/
+├── Docs/
+│   └── en-US.json
+├── docs/
+│   ├── endpoints.md
+│   ├── postman_collection.json
+│   └── endpoint_test_report.md
+├── scripts/
+│   ├── sync_game_data.py
+│   ├── verify_data.py
+│   └── run_postman_collection_tests.py
+├── run.sh
+├── Dockerfile
+└── requirements.txt
 ```
 
 ## Updating After Game Updates
@@ -182,6 +241,8 @@ The API reads from game descriptor files that come with your Satisfactory instal
 ## Deploying the API
 
 You can run the API on the web so others can call it. The app uses the `PORT` environment variable when set (default 8000), which most hosting platforms provide automatically.
+
+**Health and readiness:** For load balancers and orchestration, use `GET /health` (returns 200 when the app is up) and `GET /ready` (returns 200 when the app and the game descriptor file are loadable; returns 503 if the descriptor is missing or invalid). See `docs/endpoints.md` for details.
 
 ### Docker
 
