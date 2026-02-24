@@ -15,7 +15,7 @@ See `docs/endpoint_test_report.md` for current test results and pass rates. The 
 
 ## List endpoints and pagination
 
-**Endpoints with optional pagination:** `GET /recipes`, `GET /items`, and `GET /progression/unlocks` accept optional `limit` and `offset` query parameters. Pagination is applied after any filters (e.g. `building`, `item_type`, `unlock_type`). If neither `limit` nor `offset` is provided, the full filtered list is returned.
+**Endpoints with optional pagination:** `GET /recipes`, `GET /items`, `GET /progression/milestones`, and `GET /progression/unlocks` accept optional `limit` and `offset` query parameters. Pagination is applied after any filters (e.g. `building`, `item_type`, `tier`, `phase`, `unlock_type`). If neither `limit` nor `offset` is provided, the full filtered list is returned.
 
 - **limit** (optional, integer 1–1000): Maximum number of results to return.
 - **offset** (optional, integer ≥ 0): Number of results to skip.
@@ -83,6 +83,25 @@ Or when the file exists but cannot be parsed:
 }
 ```
 
+#### `GET /meta`
+Returns API version and game data metadata so clients can detect when the backing data has changed (e.g. for cache invalidation). Reads the descriptor file modification time as the game data timestamp.
+
+**Response:** `200 OK`
+- Header `X-Game-Data-Last-Updated` (when descriptor is present): ISO 8601 timestamp of the descriptor file's last modification.
+
+**Body:**
+```json
+{
+  "api_version": "1.0.0",
+  "game_data_source": "descriptor",
+  "game_data_last_updated": "2025-02-23T12:00:00Z"
+}
+```
+If the descriptor file is missing, `game_data_last_updated` is `null` and the header is omitted.
+
+#### `GET /version`
+Alias for the same metadata as `GET /meta`. Returns `api_version`, `game_data_source`, and `game_data_last_updated`.
+
 ---
 
 ### Miners
@@ -135,6 +154,8 @@ GET /miners/1
 
 ### Belts
 
+Belt speed and throughput are expressed in **items per minute (items/min)** throughout the API and in the game. Distances and belt length use other units; this API does not expose conveyor length or speed in cm/s.
+
 #### `GET /belts`
 Get all conveyor belts (Mk1 through Mk6).
 
@@ -185,6 +206,7 @@ Get all recipes including alternate recipes.
 **Query Parameters:**
 - `alternate_only` (optional, boolean): Filter to only alternate recipes
 - `building` (optional, string): Filter by building type (e.g., "Constructor", "Assembler", "Manufacturer")
+- `search` (optional, string): Substring match on recipe display name or class name (case-insensitive)
 - `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
 - `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
@@ -195,7 +217,8 @@ Get all recipes including alternate recipes.
 GET /recipes
 GET /recipes?alternate_only=true
 GET /recipes?building=Constructor
-GET /recipes?alternate_only=false&building=Assembler
+GET /recipes?search=Iron
+GET /recipes?search=Alternate&building=Assembler
 GET /recipes?limit=50&offset=0
 GET /recipes?building=Assembler&limit=20&offset=40
 ```
@@ -312,6 +335,7 @@ Get all items (raw resources, components, products, equipment, building parts).
   - `component`: Components (Iron Plate, Iron Rod, Wire, etc.)
   - `equipment`: Equipment items
   - `building_part`: Building parts
+- `search` (optional, string): Substring match on item display name or class name (case-insensitive)
 - `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
 - `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
@@ -322,6 +346,8 @@ Get all items (raw resources, components, products, equipment, building parts).
 GET /items
 GET /items?item_type=component
 GET /items?item_type=raw_resource
+GET /items?search=Iron
+GET /items?search=Rod&item_type=component
 GET /items?limit=100&offset=0
 GET /items?item_type=component&limit=50
 ```
@@ -820,7 +846,7 @@ Most list endpoints support filtering via query parameters:
 - String filters: Case-insensitive matching
 
 ### Pagination
-Currently, all endpoints return complete datasets. For large result sets (like recipes with 800+ items), consider filtering using query parameters.
+Only these list endpoints support optional `limit` and `offset`: `GET /recipes`, `GET /items`, `GET /progression/milestones`, and `GET /progression/unlocks`. All other list endpoints return the full list with no pagination. See "List endpoints and pagination" at the top of this document for parameter details.
 
 ## Examples
 
@@ -2456,6 +2482,8 @@ Get milestone information for tier progression.
 **Query Parameters:**
 - `tier` (optional, integer): Filter by tier number
 - `phase` (optional, integer): Filter by phase number
+- `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
+- `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
 
 **Response:** `List[Milestone]`
 
@@ -2465,6 +2493,8 @@ GET /progression/milestones
 GET /progression/milestones?tier=3
 GET /progression/milestones?phase=2
 GET /progression/milestones?tier=3&phase=2
+GET /progression/milestones?limit=50&offset=0
+GET /progression/milestones?tier=3&limit=20
 ```
 
 **Response Model:**

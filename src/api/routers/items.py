@@ -21,6 +21,7 @@ except Exception as e:
 @router.get("", response_model=List[Item])
 async def get_items(
     item_type: Optional[str] = Query(None, description="Filter by item type (raw_resource, component, equipment, building_part)"),
+    search: Optional[str] = Query(None, description="Filter by substring match on display name or class name (case-insensitive)"),
     limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
     offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
@@ -32,6 +33,10 @@ async def get_items(
         
         if item_type:
             items_data = [i for i in items_data if (i.get("item_type") or "").lower() == (item_type or "").lower()]
+        
+        if search:
+            q = search.lower()
+            items_data = [i for i in items_data if q in (i.get("display_name") or "").lower() or q in (i.get("class_name") or "").lower()]
         
         items = [Item(**item) for item in items_data]
         

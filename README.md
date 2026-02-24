@@ -1,5 +1,7 @@
 # Satisfactory Game Data API
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 A simple REST API that provides game data from Satisfactory in an easy-to-use format. Perfect for building factory planning tools, calculators, and automation scripts.
 
 ## What is This?
@@ -20,14 +22,22 @@ This API reads game data files from your Satisfactory installation and makes all
 pip install -r requirements.txt
 ```
 
+Or install as a package (editable):
+```bash
+pip install -e .
+```
+
 **2. Make sure you have the game data file:**
 - Place `en-US.json` from your Satisfactory installation into the `Docs/` directory
 - This file contains all the game data the API needs
+- Without it, the server still starts but `GET /ready` returns 503 and data endpoints may fail
 
 **3. Start the server:**
 ```bash
 uvicorn src.api.main:app --reload
 ```
+
+Or run the installed entry point: `satisfactory-api` (uses `PORT` from the environment or 8000).
 
 **4. Visit the interactive documentation:**
 - Open your browser to `http://localhost:8000/docs`
@@ -39,7 +49,40 @@ That's it! Your API is running and ready to use.
 
 ## Live API
 
-A deployed instance is available at `https://satisfactory-api-yfw1.onrender.com` (no auth). Use `/docs` there for interactive docs. Full endpoint list and test status: see `docs/endpoints.md`.
+A deployed instance is available at `https://satisfactory-api-yfw1.onrender.com` (no auth). Use `/docs` there for interactive docs. Full endpoint list and test status: see `docs/endpoints.md`. You can try the API without any local setup by using this base URL in your scripts or with `curl`.
+
+## Use in your project
+
+You can depend on this API in two ways:
+
+**Option A: Call the live API**  
+Use the base URL `https://satisfactory-api-yfw1.onrender.com` in your app. No installation or game data required. Example with `httpx`:
+
+```bash
+pip install httpx
+```
+
+```python
+import httpx
+base = "https://satisfactory-api-yfw1.onrender.com"
+r = httpx.get(f"{base}/recipes", params={"alternate_only": True, "limit": 10})
+recipes = r.json()
+```
+
+**Option B: Run your own instance**  
+Clone this repo, add `Docs/en-US.json` from your game install, then run the server. Use `http://localhost:8000` (or your deployed URL) as the base URL in your code. See [Deploying the API](#deploying-the-api) for hosting options.
+
+**Generate a client from the API**  
+The API exposes an OpenAPI 3.0 spec at `GET /openapi.json`. Use it with [OpenAPI Generator](https://openapi-generator.tech/), [Swagger Codegen](https://swagger.io/tools/swagger-codegen/), or your IDE to generate a type-safe client in Python, TypeScript, or other languages. Example (replace with your base URL if self-hosting):
+
+```bash
+curl -o openapi.json https://satisfactory-api-yfw1.onrender.com/openapi.json
+openapi-generator generate -i openapi.json -g python -o ./satisfactory-client
+```
+
+## API stability
+
+This project follows [Semantic Versioning](https://semver.org/) for the API. Patch releases (e.g. 1.0.x) keep response shapes and query parameters compatible. Breaking changes will be documented in [CHANGELOG.md](CHANGELOG.md) and released as a new major version.
 
 ## What Can I Do With This API?
 
@@ -54,6 +97,17 @@ Query recipes by building type, find alternate recipes, filter items by category
 
 ### Calculate Production
 Use the calculation endpoints to figure out building requirements, production chains, and resource needs.
+
+### Use cases
+
+Use this API to build:
+
+- Factory calculators and production planners
+- Bots or scripts that need up-to-date recipe and building data
+- Web or mobile apps that display Satisfactory data (belts, miners, power, logistics)
+- Tools that compare recipes or compute full production chains
+
+If you build something with this API, consider sharing it so we can link it here.
 
 ## Available Endpoints
 
@@ -148,29 +202,49 @@ Get information about all transportation methods:
 - `GET /extractors/resource-well-extractors` - Resource well extractors
 
 ### Progression
-- `GET /progression/milestones` - Milestones
+- `GET /progression/milestones` - Milestones (optional `?limit=` and `?offset=` for pagination; see docs/endpoints.md)
 - `GET /progression/unlocks` - Unlocks (optional `?limit=` and `?offset=` for pagination; see docs/endpoints.md)
+
+### More you can do (summary)
+
+The above lists the main endpoints. The API also supports many lookups and filters not shown in full here:
+
+- **Transportation:** Freight platforms (`/transportation/freight-platforms`), railway tracks (`/transportation/railway-tracks`), train signals (`/transportation/trains/signals`, plus by type). Get a single item by name: locomotives, freight cars, drones, train stations.
+- **Progression:** Milestones by tier (`/progression/milestones/{tier}`) or by name (`/progression/milestones/name/{milestone_name}`). Unlocks by name or by type (`/progression/unlocks/type/{unlock_type}`).
+- **Power:** Generators by name or by tier; storage by name; poles by name.
+- **Logistics:** Splitters, mergers, storage containers, and valves by name (e.g. `/logistics/splitters/{splitter_name}`).
+- **Extractors:** Water extractors and resource well extractors by name.
+
+For the complete list of paths, query parameters, and response shapes, see `docs/endpoints.md`.
 
 ## Example Usage
 
+Examples below use the live API. Replace the base URL with `http://localhost:8000` when running the API locally.
+
 **Get all recipes:**
 ```bash
-curl http://localhost:8000/recipes
+curl https://satisfactory-api-yfw1.onrender.com/recipes
 ```
 
 **Get only alternate recipes:**
 ```bash
-curl http://localhost:8000/recipes?alternate_only=true
+curl "https://satisfactory-api-yfw1.onrender.com/recipes?alternate_only=true"
 ```
 
 **Get a specific item:**
 ```bash
-curl http://localhost:8000/items/Iron%20Ingot
+curl "https://satisfactory-api-yfw1.onrender.com/items/Iron%20Ingot"
 ```
 
 **Get all Mk3 belts:**
 ```bash
-curl http://localhost:8000/belts/3
+curl https://satisfactory-api-yfw1.onrender.com/belts/3
+```
+
+**Run the example script** (fetches recipes and runs a buildings-needed calculation):
+```bash
+python3 examples/fetch_and_calculate.py
+python3 examples/fetch_and_calculate.py --base-url http://localhost:8000
 ```
 
 ## Interactive Documentation
@@ -210,13 +284,19 @@ satisfactory-api/
 │   ├── endpoints.md
 │   ├── postman_collection.json
 │   └── endpoint_test_report.md
+├── examples/
+│   └── fetch_and_calculate.py
 ├── scripts/
 │   ├── sync_game_data.py
 │   ├── verify_data.py
 │   └── run_postman_collection_tests.py
 ├── run.sh
 ├── Dockerfile
-└── requirements.txt
+├── pyproject.toml
+├── requirements.txt
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+└── LICENSE
 ```
 
 ## Updating After Game Updates
@@ -241,6 +321,12 @@ The API reads from game descriptor files that come with your Satisfactory instal
 ## Deploying the API
 
 You can run the API on the web so others can call it. The app uses the `PORT` environment variable when set (default 8000), which most hosting platforms provide automatically.
+
+**Configuration (environment variables):**
+
+- `PORT` – Port to bind (default 8000). Set by most PaaS providers.
+- `BASE_URL` – Optional. If set, the root response `GET /` includes a `base_url` field with this value (e.g. `https://your-app.onrender.com`). Useful for clients that discover the API URL from the root.
+- `SATISFACTORY_SOURCE` – Optional. Default source path for `scripts/sync_game_data.py` when no path argument is given.
 
 **Health and readiness:** For load balancers and orchestration, use `GET /health` (returns 200 when the app is up) and `GET /ready` (returns 200 when the app and the game descriptor file are loadable; returns 503 if the descriptor is missing or invalid). See `docs/endpoints.md` for details.
 
@@ -279,4 +365,6 @@ After deploying, share the base URL (e.g. `https://your-app.fly.dev`) so others 
 
 ## License
 
-This project is for educational and community use with Satisfactory game data.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for the full text. The project is for educational and community use with Satisfactory game data.
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to run tests, add endpoints, and update data after game updates.

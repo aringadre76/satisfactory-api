@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "satisfactory-api"
+version = "1.0.0"
+description = "REST API providing game data from Satisfactory for factory planning tools and calculators"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Satisfactory API Contributors" }]
+keywords = ["satisfactory", "api", "game-data", "rest", "factory"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+]
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+dev = []
+
+[project.urls]
+Repository = "https://github.com/your-org/satisfactory-api"
+Documentation = "https://github.com/your-org/satisfactory-api#readme"
+
+[project.scripts]
+satisfactory-api = "src.api.main:run"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

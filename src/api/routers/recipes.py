@@ -21,7 +21,8 @@ except Exception as e:
 @router.get("", response_model=List[Recipe])
 async def get_recipes(
     alternate_only: Optional[bool] = Query(None, description="Filter to only alternate recipes"),
-    building: Optional[str] = Query(None, description="Filter by building type (e.g., Constructor, Assembler)"),
+    building: Optional[str] = Query(None, description="Filter by building type (e.g., Constructor, Assembler). Case-insensitive."),
+    search: Optional[str] = Query(None, description="Filter by substring match on display name or class name (case-insensitive)"),
     limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
     offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
@@ -35,7 +36,12 @@ async def get_recipes(
             recipes_data = [r for r in recipes_data if r["is_alternate"] == alternate_only]
         
         if building:
-            recipes_data = [r for r in recipes_data if building in r.get("produced_in", [])]
+            building_lower = building.lower()
+            recipes_data = [r for r in recipes_data if any(entry.lower() == building_lower for entry in r.get("produced_in", []))]
+        
+        if search:
+            q = search.lower()
+            recipes_data = [r for r in recipes_data if q in (r.get("display_name") or "").lower() or q in (r.get("class_name") or "").lower()]
         
         recipes = []
         for recipe_data in recipes_data:

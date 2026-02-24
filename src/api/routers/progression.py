@@ -21,7 +21,9 @@ except Exception as e:
 @router.get("/milestones", response_model=List[Milestone])
 async def get_milestones(
     tier: Optional[int] = Query(None, description="Filter by tier number"),
-    phase: Optional[int] = Query(None, description="Filter by phase number")
+    phase: Optional[int] = Query(None, description="Filter by phase number"),
+    limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
+    offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
     if parser is None:
         raise HTTPException(status_code=500, detail="Game descriptor data not available")
@@ -35,7 +37,14 @@ async def get_milestones(
         if phase is not None:
             milestones_data = [m for m in milestones_data if m.get("phase") == phase]
         
-        return [Milestone(**milestone) for milestone in milestones_data]
+        milestones = [Milestone(**milestone) for milestone in milestones_data]
+        
+        if offset is not None:
+            milestones = milestones[offset:]
+        if limit is not None:
+            milestones = milestones[:limit]
+        
+        return milestones
     except Exception as e:
         logger.error(f"Error extracting milestones: {e}")
         raise HTTPException(status_code=500, detail="Failed to extract milestone data")

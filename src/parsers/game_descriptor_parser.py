@@ -49,14 +49,28 @@ class GameDescriptorParser:
         return default
     
     def _get_class_by_name(self, class_name_pattern: str) -> Optional[Dict[str, Any]]:
-        pattern = re.compile(class_name_pattern)
+        pattern = re.compile(re.escape(class_name_pattern))
         for entry in self.data:
             if "Classes" in entry:
                 for class_obj in entry["Classes"]:
                     if "ClassName" in class_obj and pattern.match(class_obj["ClassName"]):
                         return class_obj
         return None
-    
+
+    def _get_class_by_any_name(self, *class_name_patterns: str) -> Optional[Dict[str, Any]]:
+        for name in class_name_patterns:
+            obj = self._get_class_by_name(name)
+            if obj is not None:
+                return obj
+        return None
+
+    def _get_display_info_any(self, *desc_class_names: str) -> Dict[str, str]:
+        for name in desc_class_names:
+            info = self._get_display_info(name)
+            if info.get("display_name") or info.get("description"):
+                return info
+        return self._get_display_info(desc_class_names[0]) if desc_class_names else {"display_name": "", "description": ""}
+
     def _get_display_info(self, desc_class_name: str) -> Dict[str, str]:
         desc_class = self._get_class_by_name(desc_class_name)
         if desc_class:
@@ -194,16 +208,29 @@ class GameDescriptorParser:
         if not produced_in_str or produced_in_str == "":
             return []
         
-        buildings = []
         pattern = r'"([^"]+Build_[^"]+)"'
         matches = re.findall(pattern, produced_in_str)
         
+        building_type_map = {
+            "OilRefinery": "Refinery",
+        }
+        
+        def normalize_building_name(name: str) -> str:
+            normalized = re.sub(r'Mk\d+$', '', name, flags=re.IGNORECASE)
+            return building_type_map.get(normalized, normalized)
+        
+        seen = []
         for match in matches:
             building_match = re.search(r'Build_(\w+)\.Build_\w+_C', match)
+            if not building_match:
+                building_match = re.search(r'Build_(\w+)_C', match)
             if building_match:
-                buildings.append(building_match.group(1))
+                name = building_match.group(1)
+                normalized = normalize_building_name(name)
+                if normalized and normalized not in seen:
+                    seen.append(normalized)
         
-        return buildings
+        return seen
     
     def _is_alternate_recipe(self, class_name: str, full_name: str, display_name: str) -> bool:
         if "Recipe_Alternate_" in class_name:
@@ -302,26 +329,38 @@ class GameDescriptorParser:
             "Desc_Pattern_",
             "Desc_Swatch_"
         ]
-        
+
+        raw_resource_class_patterns = [
+            re.compile(r"Desc_(OreIron|OreCopper|OreGold|OreBauxite|OreUranium)_C"),
+            re.compile(r"Desc_(Coal|Stone|Sulfur|RawQuartz|LiquidOil|Water|NitrogenGas|Geyser|SAM)_C"),
+            re.compile(r"Desc_(CrudeOil|LiquidOil)_C")
+        ]
+
         for entry in self.data:
             if "Classes" in entry:
                 for class_obj in entry["Classes"]:
                     class_name = class_obj.get("ClassName", "")
-                    
+
                     if class_name.startswith("Desc_") and not any(class_name.startswith(prefix) for prefix in excluded_prefixes):
                         display_name = class_obj.get("mDisplayName", "")
-                        
+
                         if not display_name or display_name == "N/A":
                             continue
-                        
+
                         item_type = "component"
-                        if "RawResources" in class_obj.get("FullName", ""):
+                        full_name = class_obj.get("FullName", "")
+                        if "RawResources" in full_name:
                             item_type = "raw_resource"
-                        elif "Equipment" in class_obj.get("FullName", ""):
+                        elif "Equipment" in full_name:
                             item_type = "equipment"
-                        elif any(building in class_obj.get("FullName", "") for building in ["Buildable", "Factory"]):
+                        elif any(building in full_name for building in ["Buildable", "Factory"]):
                             item_type = "building_part"
-                        
+                        else:
+                            for pat in raw_resource_class_patterns:
+                                if pat.match(class_name):
+                                    item_type = "raw_resource"
+                                    break
+
                         item = {
                             "class_name": class_name,
                             "display_name": display_name,
@@ -330,7 +369,7 @@ class GameDescriptorParser:
                             "stack_size": class_obj.get("mStackSize") if class_obj.get("mStackSize") else None
                         }
                         items.append(item)
-        
+
         return items
     
     def extract_pipelines(self) -> List[Dict[str, Any]]:
@@ -664,18 +703,16 @@ class GameDescriptorParser:
     def extract_power_storage(self) -> List[Dict[str, Any]]:
         storage = []
         unlock_map = self._build_unlock_mapping()
-        build_class_name = "Build_PowerStorage_C"
-        desc_class_name = "Desc_PowerStorage_C"
-        
-        build_class = self._get_class_by_name(build_class_name)
-        
+        build_class = self._get_class_by_any_name("Build_PowerStorage_C", "Build_PowerStorageMk1_C")
+        desc_names = ("Desc_PowerStorage_C", "Desc_PowerStorageMk1_C")
+
         if build_class:
-            display_info = self._get_display_info(desc_class_name)
-            
+            display_info = self._get_display_info_any(*desc_names)
+
             capacity = self._parse_float(build_class.get("mPowerCapacity", "100"))
-            
+
             unlock_info = self._get_unlock_info("Recipe_PowerStorage_C", unlock_map)
-            
+
             storage_data = {
                 "class_name": build_class.get("ClassName", ""),
                 "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
@@ -688,7 +725,7 @@ class GameDescriptorParser:
                 "milestone": unlock_info.get("milestone")
             }
             storage.append(storage_data)
-        
+
         return storage
     
     def extract_power_poles(self) -> List[Dict[str, Any]]:
@@ -721,19 +758,19 @@ class GameDescriptorParser:
         splitters = []
         unlock_map = self._build_unlock_mapping()
         splitter_configs = [
-            ("Build_ConveyorSplitter_C", "Desc_ConveyorSplitter_C", "Regular", 3, "Recipe_ConveyorSplitter"),
-            ("Build_ConveyorSplitterSmart_C", "Desc_ConveyorSplitterSmart_C", "Smart", 3, "Recipe_ConveyorSplitterSmart"),
-            ("Build_ConveyorSplitterProgrammable_C", "Desc_ConveyorSplitterProgrammable_C", "Programmable", 3, "Recipe_ConveyorSplitterProgrammable")
+            ("Build_ConveyorSplitter_C", "Build_ConveyorAttachmentSplitter_C", "Desc_ConveyorSplitter_C", "Regular", 3, "Recipe_ConveyorSplitter"),
+            ("Build_ConveyorSplitterSmart_C", "Build_ConveyorAttachmentSplitterSmart_C", "Desc_ConveyorSplitterSmart_C", "Smart", 3, "Recipe_ConveyorSplitterSmart"),
+            ("Build_ConveyorSplitterProgrammable_C", "Build_ConveyorAttachmentSplitterProgrammable_C", "Desc_ConveyorSplitterProgrammable_C", "Programmable", 3, "Recipe_ConveyorSplitterProgrammable")
         ]
-        
-        for build_class_name, desc_class_name, splitter_type, output_count, recipe_prefix in splitter_configs:
-            build_class = self._get_class_by_name(build_class_name)
-            
+
+        for build_primary, build_fallback, desc_class_name, splitter_type, output_count, recipe_prefix in splitter_configs:
+            build_class = self._get_class_by_any_name(build_primary, build_fallback)
+
             if build_class:
                 display_info = self._get_display_info(desc_class_name)
-                
+
                 unlock_info = self._get_unlock_info(f"{recipe_prefix}_C", unlock_map)
-                
+
                 splitter_data = {
                     "class_name": build_class.get("ClassName", ""),
                     "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
@@ -745,22 +782,20 @@ class GameDescriptorParser:
                     "milestone": unlock_info.get("milestone")
                 }
                 splitters.append(splitter_data)
-        
+
         return splitters
     
     def extract_conveyor_mergers(self) -> List[Dict[str, Any]]:
         mergers = []
         unlock_map = self._build_unlock_mapping()
-        build_class_name = "Build_ConveyorMerger_C"
-        desc_class_name = "Desc_ConveyorMerger_C"
-        
-        build_class = self._get_class_by_name(build_class_name)
-        
+        build_class = self._get_class_by_any_name("Build_ConveyorMerger_C", "Build_ConveyorAttachmentMerger_C")
+        desc_names = ("Desc_ConveyorMerger_C",)
+
         if build_class:
-            display_info = self._get_display_info(desc_class_name)
-            
+            display_info = self._get_display_info_any(*desc_names)
+
             unlock_info = self._get_unlock_info("Recipe_ConveyorMerger_C", unlock_map)
-            
+
             merger_data = {
                 "class_name": build_class.get("ClassName", ""),
                 "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
@@ -771,7 +806,7 @@ class GameDescriptorParser:
                 "milestone": unlock_info.get("milestone")
             }
             mergers.append(merger_data)
-        
+
         return mergers
     
     def extract_storage_containers(self) -> List[Dict[str, Any]]:
@@ -810,22 +845,26 @@ class GameDescriptorParser:
         buffers = []
         unlock_map = self._build_unlock_mapping()
         buffer_configs = [
-            ("Build_PipelineJunction_Cross_C", "Desc_PipelineJunctionCross_C", 0, None),
-            ("Build_FluidBuffer_C", "Desc_FluidBuffer_C", 50, "Recipe_PipeStorageTank"),
-            ("Build_IndustrialFluidBuffer_C", "Desc_IndustrialFluidBuffer_C", 200, "Recipe_IndustrialFluidBuffer")
+            ("Build_PipelineJunction_Cross_C", ("Desc_PipelineJunction_Cross_C", "Desc_PipelineJunctionCross_C"), 0, None),
+            ("Build_FluidBuffer_C", "Build_PipeStorageTank_C", ("Desc_FluidBuffer_C", "Desc_PipeStorageTank_C"), 50, "Recipe_PipeStorageTank"),
+            ("Build_IndustrialFluidBuffer_C", ("Desc_IndustrialFluidBuffer_C",), 200, "Recipe_IndustrialFluidBuffer")
         ]
-        
-        for build_class_name, desc_class_name, capacity, recipe_prefix in buffer_configs:
-            build_class = self._get_class_by_name(build_class_name)
-            
+
+        for cfg in buffer_configs:
+            if len(cfg) == 4:
+                build_name, desc_names, capacity, recipe_prefix = cfg
+                build_class = self._get_class_by_name(build_name)
+            else:
+                build_primary, build_fallback, desc_names, capacity, recipe_prefix = cfg
+                build_class = self._get_class_by_any_name(build_primary, build_fallback)
+            display_info = self._get_display_info_any(*desc_names)
+
             if build_class:
-                display_info = self._get_display_info(desc_class_name)
-                
                 if capacity > 0:
                     unlock_info = {}
                     if recipe_prefix:
                         unlock_info = self._get_unlock_info(f"{recipe_prefix}_C", unlock_map)
-                    
+
                     buffer_data = {
                         "class_name": build_class.get("ClassName", ""),
                         "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
@@ -837,7 +876,19 @@ class GameDescriptorParser:
                         "milestone": unlock_info.get("milestone") if unlock_info else None
                     }
                     buffers.append(buffer_data)
-        
+                else:
+                    buffer_data = {
+                        "class_name": build_class.get("ClassName", ""),
+                        "display_name": build_class.get("mDisplayName") or display_info.get("display_name", ""),
+                        "description": build_class.get("mDescription") or display_info.get("description", ""),
+                        "capacity": 0.0,
+                        "input_rate": None,
+                        "output_rate": None,
+                        "tier_unlocked": None,
+                        "milestone": None
+                    }
+                    buffers.append(buffer_data)
+
         return buffers
     
     def extract_valves(self) -> List[Dict[str, Any]]:

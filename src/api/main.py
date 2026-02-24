@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pathlib import Path
+from datetime import datetime, timezone
 from src.api.routers import miners, belts, resources, recipes, buildings, items, calculations, transportation, power, logistics, extractors, progression
 from src.parsers.game_descriptor_parser import GameDescriptorParser
 
@@ -36,15 +37,45 @@ DESCRIPTOR_FILE = Path(__file__).resolve().parent.parent.parent / "Docs" / "en-U
 
 @app.get("/")
 async def root():
-    return {
+    import os
+    base_url = os.environ.get("BASE_URL", "").rstrip("/")
+    out = {
         "message": "Satisfactory Game Data API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "openapi": "/openapi.json",
     }
+    if base_url:
+        out["base_url"] = base_url
+    return out
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+def _game_data_meta():
+    if not DESCRIPTOR_FILE.exists():
+        return {"api_version": "1.0.0", "game_data_source": "descriptor", "game_data_last_updated": None}
+    mtime = DESCRIPTOR_FILE.stat().st_mtime
+    dt = datetime.fromtimestamp(mtime, tz=timezone.utc)
+    return {
+        "api_version": "1.0.0",
+        "game_data_source": "descriptor",
+        "game_data_last_updated": dt.isoformat().replace("+00:00", "Z"),
+    }
+
+@app.get("/meta")
+async def meta():
+    data = _game_data_meta()
+    if data["game_data_last_updated"] is None:
+        return JSONResponse(status_code=200, content=data)
+    resp = JSONResponse(status_code=200, content=data)
+    resp.headers["X-Game-Data-Last-Updated"] = data["game_data_last_updated"]
+    return resp
+
+@app.get("/version")
+async def version():
+    return _game_data_meta()
 
 @app.get("/ready")
 async def ready():
@@ -61,3 +92,10 @@ async def ready():
             status_code=503,
             content={"status": "not ready", "detail": str(e)}
         )
+
+
+def run():
+    import uvicorn
+    import os
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
