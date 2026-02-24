@@ -267,6 +267,26 @@ python3 scripts/run_postman_collection_tests.py --base-url https://satisfactory-
 
 The collection is in `docs/postman_collection.json`. Results are written to `docs/endpoint_test_report.md` and `docs/endpoint_test_report.json`.
 
+## MCP (Model Context Protocol) server
+
+The API can be exposed as an MCP server so AI assistants (e.g. Cursor) can call it as tools. Two tools are provided:
+
+- **get_planning_context** – Returns the full planning-context payload (items, recipes, buildings, belts, miners, resource-nodes, raw-resources, overclock; optional progression). Optional args: `tier`, `milestone`, `include_progression`.
+- **satisfactory_get** – Generic GET: pass a path (e.g. `recipes`, `items/Iron Ingot`, `calculate/buildings-needed`) and optional `query_params` as JSON to call any endpoint.
+
+Install the MCP SDK, then run the server with stdio (for Cursor):
+
+```bash
+pip install mcp
+python scripts/mcp_server.py
+```
+
+Or with uv (no install): `uv run --with mcp python scripts/mcp_server.py`
+
+Base URL is taken from `SATISFACTORY_API_BASE_URL` (default: the live deployment). To use your local API, set `SATISFACTORY_API_BASE_URL=http://localhost:8000`.
+
+**Cursor:** In Settings > Features > MCP, add a new server. Choose **stdio**. Set the command to `python` (or `python3`) and args to the full path to `scripts/mcp_server.py` in your repo. Ensure the MCP package is installed in that environment (`pip install mcp` or `uv add mcp`). Alternatively use command `uv` with args `run`, `--with`, `mcp`, `python`, `<full-path>/scripts/mcp_server.py`.
+
 ## Project Structure
 
 ```
@@ -289,7 +309,8 @@ satisfactory-api/
 ├── scripts/
 │   ├── sync_game_data.py
 │   ├── verify_data.py
-│   └── run_postman_collection_tests.py
+│   ├── run_postman_collection_tests.py
+│   └── mcp_server.py
 ├── run.sh
 ├── Dockerfile
 ├── pyproject.toml
