@@ -165,6 +165,11 @@ satisfactory-api/
 When Satisfactory releases an update:
 
 1. Copy the new `en-US.json` file to the `Docs/` directory
+   - Or run the sync script to pull from your game install:
+     ```bash
+     python3 scripts/sync_game_data.py "C:\Program Files (x86)\Steam\steamapps\common\Satisfactory\CommunityResources"
+     ```
+     If the descriptor JSON files live in a `Docs` subfolder under that path, they are copied into project `Docs/`. You can set `SATISFACTORY_SOURCE` instead of passing the path, or use the WSL path from Linux.
 2. Run the verification script: `python3 scripts/verify_data.py`
 3. Restart the API server
 
