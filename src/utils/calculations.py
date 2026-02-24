@@ -1,6 +1,52 @@
 from typing import Dict, List, Optional, Tuple
 from src.parsers.game_descriptor_parser import GameDescriptorParser
 
+
+def _extract_class_name_from_path_impl(item_class_path: str) -> str:
+    if "/Desc_" in item_class_path:
+        parts = item_class_path.split("/Desc_")
+        if len(parts) > 1:
+            class_part = parts[-1].split(".")[0]
+            return f"Desc_{class_part}_C"
+    return item_class_path
+
+
+def find_item_by_name(parser: GameDescriptorParser, item_name: str) -> Optional[Dict]:
+    items = parser.extract_all_items()
+    for item in items:
+        if item["class_name"] == item_name or (item.get("display_name") or "").lower() == item_name.lower():
+            return item
+    return None
+
+
+def find_recipes_by_product(parser: GameDescriptorParser, item_class_or_name: str) -> List[Dict]:
+    item_obj = find_item_by_name(parser, item_class_or_name)
+    if not item_obj:
+        return []
+    item_class = item_obj["class_name"]
+    item_display_name = item_obj.get("display_name")
+
+    recipes = parser.extract_recipes()
+    matching = []
+    for recipe in recipes:
+        for product in recipe.get("products", []):
+            product_class = product["item_class"]
+            product_class_short = _extract_class_name_from_path_impl(product_class)
+            match = False
+            item_name_short = item_class.replace("Desc_", "").replace("_C", "")
+            product_name_short = product_class_short.replace("Desc_", "").replace("_C", "") if product_class_short else ""
+            if product_class_short and product_class_short == item_class:
+                match = True
+            elif item_name_short in product_class:
+                match = True
+            elif product_name_short and product_name_short == item_name_short:
+                match = True
+            if match:
+                matching.append(recipe)
+                break
+    return matching
+
+
 class SatisfactoryCalculator:
     def __init__(self, parser: GameDescriptorParser):
         self.parser = parser
@@ -26,7 +72,7 @@ class SatisfactoryCalculator:
     def _find_item_by_name(self, item_name: str):
         items = self._get_items()
         for item in items:
-            if item["class_name"] == item_name or item["display_name"].lower() == item_name.lower():
+            if item["class_name"] == item_name or (item.get("display_name") or "").lower() == item_name.lower():
                 return item
         return None
     
@@ -60,9 +106,9 @@ class SatisfactoryCalculator:
                         match = True
                     elif product_name_short and product_name_short == item_name_short:
                         match = True
-                    elif item_display_name and (recipe["display_name"] == item_display_name or 
-                        recipe["display_name"].startswith(item_display_name + " ") or
-                        recipe["display_name"].startswith("Alternate: " + item_display_name)):
+                    elif item_display_name and ((recipe.get("display_name") or "") == item_display_name or 
+                        (recipe.get("display_name") or "").startswith(item_display_name + " ") or
+                        (recipe.get("display_name") or "").startswith("Alternate: " + item_display_name)):
                         match = True
                 else:
                     if (product_class == item_class or 
@@ -76,18 +122,13 @@ class SatisfactoryCalculator:
         return matching
     
     def _extract_class_name_from_path(self, item_class_path: str) -> str:
-        if "/Desc_" in item_class_path:
-            parts = item_class_path.split("/Desc_")
-            if len(parts) > 1:
-                class_part = parts[-1].split(".")[0]
-                return f"Desc_{class_part}_C"
-        return item_class_path
+        return _extract_class_name_from_path_impl(item_class_path)
     
     def calculate_production_rate(self, recipe_name: str, building_name: Optional[str] = None, overclock_percentage: float = 100.0) -> Dict:
         recipes = self._get_recipes()
         recipe = None
         for r in recipes:
-            if r["class_name"] == recipe_name or r["display_name"].lower() == recipe_name.lower():
+            if r["class_name"] == recipe_name or (r.get("display_name") or "").lower() == recipe_name.lower():
                 recipe = r
                 break
         
@@ -183,7 +224,7 @@ class SatisfactoryCalculator:
             "overclock_percentage": overclock_percentage
         }
     
-    def calculate_production_chain(self, item_name: str, target_rate: float, include_alternates: bool = True, preferred_recipe: Optional[str] = None) -> Dict:
+    def calculate_production_chain(self, item_name: str, target_rate: float, include_alternates: bool = True, preferred_recipe: Optional[str] = None, input_belt_limit: Optional[float] = None, output_belt_limit: Optional[float] = None, byproduct_recycling: bool = False) -> Dict:
         item = self._find_item_by_name(item_name)
         if not item:
             return {"error": f"Item '{item_name}' not found"}
@@ -191,15 +232,77 @@ class SatisfactoryCalculator:
         chain = {
             "target_item": item["display_name"],
             "target_rate": target_rate,
+            "byproduct_recycling": byproduct_recycling,
             "total_power_mw": 0.0,
             "buildings": [],
             "raw_resources": {},
-            "steps": []
+            "steps": [],
+            "recycled_flows": []
         }
+        if byproduct_recycling:
+            surplus_by_item: Dict[str, List[Tuple[int, float]]] = {}
+            recycled_flows_raw: List[Dict] = []
+        else:
+            surplus_by_item = None
+            recycled_flows_raw = None
         
         processed_items = set()
         
-        def process_item(item_class_or_name: str, required_rate: float, depth: int = 0):
+        def add_to_surplus(item_class: str, step_index: int, rate: float):
+            short = _normalize_item_class_for_surplus(item_class)
+            if short not in surplus_by_item:
+                surplus_by_item[short] = []
+            surplus_by_item[short].append((step_index, rate))
+        
+        def consume_from_surplus(item_class: str, amount: float, consumer_item: str, consumer_recipe: str) -> Tuple[float, List[Dict]]:
+            short = _normalize_item_class_for_surplus(item_class)
+            available_list = surplus_by_item.get(short, [])
+            used = 0.0
+            flows: List[Dict] = []
+            idx = 0
+            while idx < len(available_list) and used < amount:
+                step_index, step_rate = available_list[idx]
+                take = min(step_rate, amount - used)
+                if take > 0:
+                    used += take
+                    flows.append({"supplier_step_index": step_index, "rate_per_minute": round(take, 3)})
+                    if step_rate - take > 1e-9:
+                        available_list[idx] = (step_index, step_rate - take)
+                        idx += 1
+                    else:
+                        available_list.pop(idx)
+                        continue
+                idx += 1
+            if flows:
+                recycled_flows_raw.append({
+                    "consumer_item": consumer_item,
+                    "consumer_recipe": consumer_recipe,
+                    "item_class": item_class,
+                    "rate_per_minute": round(used, 3),
+                    "from_steps": flows
+                })
+            return (used, flows)
+        
+        def get_surplus(item_class: str) -> float:
+            short = _normalize_item_class_for_surplus(item_class)
+            return sum(rate for _, rate in surplus_by_item.get(short, []))
+        
+        def _normalize_item_class_for_surplus(ic: str) -> str:
+            if not ic:
+                return ""
+            short = _extract_class_name_from_path_impl(ic)
+            if short:
+                return short.replace("Desc_", "").replace("_C", "").lower()
+            return ic.lower()
+        
+        def _item_class_matches(product_ic: str, item_ic: str) -> bool:
+            p_short = _normalize_item_class_for_surplus(product_ic)
+            i_short = _normalize_item_class_for_surplus(item_ic)
+            if p_short and i_short:
+                return p_short == i_short
+            return product_ic == item_ic or item_ic in product_ic
+        
+        def process_item(item_class_or_name: str, required_rate: float, depth: int = 0, consumer_item: Optional[str] = None, consumer_recipe: Optional[str] = None):
             if depth > 20:
                 return
             
@@ -209,9 +312,8 @@ class SatisfactoryCalculator:
             else:
                 item_class = item_obj["class_name"]
             
-            if item_class in processed_items:
+            if item_class in processed_items and not byproduct_recycling:
                 return
-            processed_items.add(item_class)
             
             recipes = self._find_recipe_by_product(item_class, include_alternates)
             if not recipes:
@@ -225,7 +327,7 @@ class SatisfactoryCalculator:
             recipe = None
             if preferred_recipe:
                 for r in recipes:
-                    if r["class_name"] == preferred_recipe or r["display_name"].lower() == preferred_recipe.lower():
+                    if r["class_name"] == preferred_recipe or (r.get("display_name") or "").lower() == preferred_recipe.lower():
                         recipe = r
                         break
             
@@ -243,7 +345,15 @@ class SatisfactoryCalculator:
             if not products:
                 return
             
-            product_amount = products[0]["amount"]
+            tracked_product = None
+            for p in products:
+                if _item_class_matches(p["item_class"], item_class):
+                    tracked_product = p
+                    break
+            if not tracked_product:
+                tracked_product = products[0]
+            
+            product_amount = tracked_product["amount"]
             items_per_minute_per_building = (60.0 / duration) * product_amount
             
             buildings_needed = required_rate / items_per_minute_per_building
@@ -265,7 +375,20 @@ class SatisfactoryCalculator:
             power_per_building = building["power_consumption"]
             total_power_for_step = buildings_needed * power_per_building
             chain["total_power_mw"] += total_power_for_step
-            
+
+            output_throughput = required_rate
+            recommended_belt_info = self._get_recommended_belt_for_throughput(output_throughput)
+
+            scale = required_rate / product_amount if product_amount else 0
+            products_output = []
+            for p in products:
+                rate_per_min = required_rate * (p["amount"] / product_amount) if product_amount else 0
+                products_output.append({
+                    "item_class": p["item_class"],
+                    "amount_per_cycle": p["amount"],
+                    "rate_per_minute": round(rate_per_min, 3)
+                })
+
             step = {
                 "item": item_obj["display_name"] if item_obj else item_class_or_name,
                 "recipe": recipe["display_name"],
@@ -275,29 +398,97 @@ class SatisfactoryCalculator:
                 "buildings_needed_rounded": round(buildings_needed),
                 "production_rate_per_building": round(items_per_minute_per_building, 3),
                 "target_production_rate": required_rate,
+                "required_output_throughput_per_minute": round(output_throughput, 3),
+                "recommended_belt_mk": recommended_belt_info["mk"] if recommended_belt_info else None,
+                "recommended_belt": recommended_belt_info,
                 "power_per_building_mw": power_per_building,
                 "total_power_mw": round(total_power_for_step, 3),
+                "products": products_output,
                 "ingredients": []
             }
-            
+            if output_belt_limit is not None and required_rate > output_belt_limit:
+                step["exceeds_belt_limit"] = True
+                step["output_exceeds_belt_limit"] = True
+                step["output_required_throughput_per_minute"] = round(required_rate, 3)
+                step["output_belt_limit_used"] = output_belt_limit
+            ingredients_for_limit = recipe.get("ingredients", [])
+            if input_belt_limit is not None and ingredients_for_limit:
+                max_input_rate = max((required_rate / product_amount) * ing["amount"] for ing in ingredients_for_limit)
+                if max_input_rate > input_belt_limit:
+                    step["exceeds_belt_limit"] = True
+                    step["input_exceeds_belt_limit"] = True
+                    step["input_required_throughput_per_minute"] = round(max_input_rate, 3)
+                    step["input_belt_limit_used"] = input_belt_limit
+            if step.get("exceeds_belt_limit"):
+                step["required_throughput_per_minute"] = step.get("output_required_throughput_per_minute", step.get("input_required_throughput_per_minute"))
+                step["belt_limit_used"] = step.get("output_belt_limit_used", step.get("input_belt_limit_used"))
+
             ingredients = recipe.get("ingredients", [])
             for ingredient in ingredients:
                 ingredient_rate = (required_rate / product_amount) * ingredient["amount"]
-                step["ingredients"].append({
+                recycled_rate = 0.0
+                recycled_from: Optional[List[Dict]] = None
+                external_rate = ingredient_rate
+                if byproduct_recycling and surplus_by_item is not None:
+                    used_recycled, flows = consume_from_surplus(ingredient["item_class"], ingredient_rate, step["item"], step["recipe"])
+                    recycled_rate = used_recycled
+                    external_rate = ingredient_rate - used_recycled
+                    if flows:
+                        recycled_from = flows
+                
+                ing_belt_info = self._get_recommended_belt_for_throughput(ingredient_rate)
+                ing_entry = {
                     "item_class": ingredient["item_class"],
                     "amount_per_cycle": ingredient["amount"],
-                    "required_rate_per_minute": round(ingredient_rate, 3)
-                })
-                process_item(ingredient["item_class"], ingredient_rate, depth + 1)
+                    "required_rate_per_minute": round(ingredient_rate, 3),
+                    "required_throughput_per_minute": round(ingredient_rate, 3),
+                    "recommended_belt_mk": ing_belt_info["mk"] if ing_belt_info else None,
+                    "recommended_belt": ing_belt_info
+                }
+                if byproduct_recycling and recycled_rate > 1e-9:
+                    ing_entry["recycled_rate_per_minute"] = round(recycled_rate, 3)
+                    ing_entry["external_rate_per_minute"] = round(external_rate, 3)
+                    if recycled_from:
+                        ing_entry["recycled_from"] = recycled_from
+                step["ingredients"].append(ing_entry)
+                
+                if external_rate > 1e-9:
+                    process_item(ingredient["item_class"], external_rate, depth + 1, step["item"], step["recipe"])
             
             chain["steps"].append(step)
+            step_index = len(chain["steps"]) - 1
+            if byproduct_recycling and surplus_by_item is not None:
+                for p in products:
+                    rate_p = required_rate * (p["amount"] / product_amount) if product_amount else 0
+                    if rate_p > 1e-9:
+                        add_to_surplus(p["item_class"], step_index, rate_p)
+            
             chain["buildings"].append({
                 "building": building["display_name"],
                 "count": round(buildings_needed),
                 "power_mw": round(total_power_for_step, 3)
             })
+            
+            if not byproduct_recycling:
+                processed_items.add(item_class)
         
         process_item(item_name, target_rate)
+        
+        if byproduct_recycling and recycled_flows_raw:
+            for r in recycled_flows_raw:
+                consumer_idx = None
+                for i, s in enumerate(chain["steps"]):
+                    if s["item"] == r["consumer_item"] and s["recipe"] == r["consumer_recipe"]:
+                        consumer_idx = i
+                        break
+                chain["recycled_flows"].append({
+                    "consumer_step_index": consumer_idx,
+                    "consumer_item": r["consumer_item"],
+                    "consumer_recipe": r["consumer_recipe"],
+                    "item_class": r["item_class"],
+                    "rate_per_minute": r["rate_per_minute"],
+                    "from_steps": r["from_steps"]
+                })
         
         chain["total_power_mw"] = round(chain["total_power_mw"], 3)
         
@@ -407,10 +598,20 @@ class SatisfactoryCalculator:
             "power_consumption_mw": round(power, 3)
         }
     
+    def _get_recommended_belt_for_throughput(self, throughput_per_minute: float) -> Optional[Dict]:
+        belts = self.parser.extract_belts()
+        if not belts:
+            return None
+        sorted_belts = sorted(belts, key=lambda b: b["speed"])
+        for belt in sorted_belts:
+            if belt["speed"] >= throughput_per_minute:
+                return {"mk": belt["mk"], "display_name": belt["display_name"]}
+        return {"mk": sorted_belts[-1]["mk"], "display_name": sorted_belts[-1]["display_name"]}
+
     def calculate_belt_requirements(self, throughput_per_minute: float) -> Dict:
         belts = self.parser.extract_belts()
         suitable_belts = []
-        
+
         for belt in belts:
             if belt["speed"] >= throughput_per_minute:
                 suitable_belts.append({
@@ -420,12 +621,12 @@ class SatisfactoryCalculator:
                     "utilization_percentage": round((throughput_per_minute / belt["speed"]) * 100, 2),
                     "headroom": round(belt["speed"] - throughput_per_minute, 2)
                 })
-        
+
         suitable_belts.sort(key=lambda x: x["speed_per_minute"])
-        
+
         if not suitable_belts:
             return {"error": f"No belt can handle {throughput_per_minute} items/minute"}
-        
+
         return {
             "required_throughput_per_minute": throughput_per_minute,
             "recommended_belt": suitable_belts[0],
@@ -481,7 +682,7 @@ class SatisfactoryCalculator:
             recipe = None
             if preferred_recipe:
                 for r in recipes:
-                    if r["class_name"] == preferred_recipe or r["display_name"].lower() == preferred_recipe.lower():
+                    if r["class_name"] == preferred_recipe or (r.get("display_name") or "").lower() == preferred_recipe.lower():
                         recipe = r
                         break
             

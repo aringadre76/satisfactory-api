@@ -38,7 +38,8 @@ Get API information.
 {
   "message": "Satisfactory Game Data API",
   "version": "1.0.0",
-  "docs": "/docs"
+  "docs": "/docs",
+  "openapi": "/openapi.json"
 }
 ```
 
@@ -84,7 +85,7 @@ Or when the file exists but cannot be parsed:
 ```
 
 #### `GET /meta`
-Returns API version and game data metadata so clients can detect when the backing data has changed (e.g. for cache invalidation). Reads the descriptor file modification time as the game data timestamp.
+Returns API version and game data metadata so clients can detect when the backing data has changed (e.g. for cache invalidation). Reads the descriptor file modification time as the game data timestamp. Includes `overclock` with the allowed range and common presets used by calculation endpoints so planner UIs can show "max clock" or dropdowns without hardcoding.
 
 **Response:** `200 OK`
 - Header `X-Game-Data-Last-Updated` (when descriptor is present): ISO 8601 timestamp of the descriptor file's last modification.
@@ -94,13 +95,55 @@ Returns API version and game data metadata so clients can detect when the backin
 {
   "api_version": "1.0.0",
   "game_data_source": "descriptor",
-  "game_data_last_updated": "2025-02-23T12:00:00Z"
+  "game_data_last_updated": "2025-02-23T12:00:00Z",
+  "overclock": {
+    "min": 1,
+    "max": 250,
+    "presets": [100, 125, 150, 200, 250]
+  }
 }
 ```
-If the descriptor file is missing, `game_data_last_updated` is `null` and the header is omitted.
+If the descriptor file is missing, `game_data_last_updated` is `null` and the header is omitted. `overclock` is always present.
 
 #### `GET /version`
-Alias for the same metadata as `GET /meta`. Returns `api_version`, `game_data_source`, and `game_data_last_updated`.
+Alias for the same metadata as `GET /meta`. Returns `api_version`, `game_data_source`, `game_data_last_updated`, and `overclock` (min, max, presets).
+
+---
+
+### Planning context (bootstrap)
+
+#### `GET /planning-context`
+Returns a single JSON payload with all data a planner needs to bootstrap in one request. Aggregates the same data as the list endpoints for items, recipes, buildings, belts, miners, resource-nodes, and raw-resources, plus overclock presets and optionally progression (milestones and unlocks). No new data; reuses existing parser and router logic.
+
+**Query Parameters:**
+- `tier` (optional, integer): Filter items, recipes, and buildings to those unlocked at or before this tier. When set, buildings with `tier_unlocked` null or less than or equal to this value are included; items and recipes are limited to those unlocked at this tier (same logic as `GET /items?unlocked_by_tier=...` and `GET /recipes?unlocked_by_tier=...`).
+- `milestone` (optional, string): Filter by milestone display name. Resolves to a tier via the milestones list; same filtering semantics as `tier` for buildings, items, and recipes once resolved.
+- `include_progression` (optional, boolean, default `false`): When `true`, the response includes a `progression` object with `milestones` and `unlocks`. When `tier` or `milestone` is also set, milestones and unlocks are limited to that tier or earlier.
+
+**Response:** `200 OK` with a single JSON object.
+
+**Response shape:**
+- `items`: array of `Item` (same as `GET /items`; when `tier` or `milestone` is provided, limited to items unlocked at that tier or milestone)
+- `recipes`: array of `Recipe` (same as `GET /recipes`; when `tier` or `milestone` is provided, limited to recipes unlocked at that tier or milestone)
+- `buildings`: array of `Building` (same as `GET /buildings`; filtered by tier/milestone when provided)
+- `belts`: array of `Belt` (same as `GET /belts`)
+- `miners`: array of `Miner` (same as `GET /miners`)
+- `resource_nodes`: array of `ResourceNode` (same as `GET /resource-nodes`)
+- `raw_resources`: array of `RawResource` (same as `GET /raw-resources`)
+- `overclock`: object with `min` (integer), `max` (integer), `presets` (array of integers), matching `GET /meta`
+- `progression` (present only when `include_progression=true`): object with `milestones` (array of `Milestone`) and `unlocks` (array of `Unlock`)
+
+**Examples:**
+```bash
+GET /planning-context
+GET /planning-context?tier=3
+GET /planning-context?milestone=Coal%20Power
+GET /planning-context?include_progression=true
+GET /planning-context?tier=4&include_progression=true
+```
+
+**Error Responses:**
+- `500`: Game descriptor data not available or failed to build planning context
 
 ---
 
@@ -207,8 +250,13 @@ Get all recipes including alternate recipes.
 - `alternate_only` (optional, boolean): Filter to only alternate recipes
 - `building` (optional, string): Filter by building type (e.g., "Constructor", "Assembler", "Manufacturer")
 - `search` (optional, string): Substring match on recipe display name or class name (case-insensitive)
+- `produces` (optional, string): Filter to recipes that output this item (by item display name or class name, case-insensitive). If no item matches, returns an empty list.
+- `unlocked_by_tier` (optional, integer): Filter to recipes unlocked at this tier. Uses progression data from the game descriptor; only recipes that are unlocked in the given tier are returned. Omit to skip this filter.
+- `unlocked_by_milestone` (optional, string): Filter to recipes unlocked by this milestone (milestone display name, case-insensitive). Uses progression data; only recipes unlocked in that milestone are returned. Omit to skip this filter.
 - `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
 - `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
+
+When both `unlocked_by_tier` and `unlocked_by_milestone` are present, results are restricted to unlocks that match both (i.e. the milestone must belong to that tier and have that display name). Planner UIs can use these filters to show only options available at a given tier or milestone.
 
 **Response:** `List[Recipe]`
 
@@ -219,8 +267,11 @@ GET /recipes?alternate_only=true
 GET /recipes?building=Constructor
 GET /recipes?search=Iron
 GET /recipes?search=Alternate&building=Assembler
+GET /recipes?produces=Iron%20Plate
 GET /recipes?limit=50&offset=0
 GET /recipes?building=Assembler&limit=20&offset=40
+GET /recipes?unlocked_by_tier=1
+GET /recipes?unlocked_by_milestone=Tier%201%20-%20Parts
 ```
 
 **Response Model:**
@@ -278,6 +329,10 @@ Get all production buildings.
 
 **Query Parameters:**
 - `building_type` (optional, string): Filter by building type (e.g., "Constructor", "Assembler", "Manufacturer", "Smelter", "Foundry", "Refinery", "Blender", "ParticleAccelerator", "Packager")
+- `unlocked_by_tier` (optional, integer): Filter to buildings unlocked at this tier. Uses progression data from the game descriptor; only buildings unlocked in the given tier are returned. Omit to skip this filter.
+- `unlocked_by_milestone` (optional, string): Filter to buildings unlocked by this milestone (milestone display name, case-insensitive). Uses progression data; only buildings unlocked in that milestone are returned. Omit to skip this filter.
+
+When both `unlocked_by_tier` and `unlocked_by_milestone` are present, results are restricted to unlocks that match both. Planner UIs can use these filters to show only building options available at a given tier or milestone.
 
 **Response:** `List[Building]`
 
@@ -285,6 +340,8 @@ Get all production buildings.
 ```bash
 GET /buildings
 GET /buildings?building_type=Constructor
+GET /buildings?unlocked_by_tier=1
+GET /buildings?unlocked_by_milestone=Tier%201%20-%20Parts
 ```
 
 **Response Model:**
@@ -336,8 +393,12 @@ Get all items (raw resources, components, products, equipment, building parts).
   - `equipment`: Equipment items
   - `building_part`: Building parts
 - `search` (optional, string): Substring match on item display name or class name (case-insensitive)
+- `unlocked_by_tier` (optional, integer): Filter to items (schematics) unlocked at this tier. Uses progression data from the game descriptor; only items whose schematic is unlocked in the given tier are returned. Omit to skip this filter.
+- `unlocked_by_milestone` (optional, string): Filter to items unlocked by this milestone (milestone display name, case-insensitive). Uses progression data; only items unlocked in that milestone are returned. Omit to skip this filter.
 - `limit` (optional, integer 1–1000): Maximum number of results to return (applied after filters). Omit for full list.
 - `offset` (optional, integer ≥ 0): Number of results to skip (applied after filters). Omit for no skip.
+
+When both `unlocked_by_tier` and `unlocked_by_milestone` are present, results are restricted to unlocks that match both. Planner UIs can use these filters to show only item options available at a given tier or milestone.
 
 **Response:** `List[Item]`
 
@@ -350,6 +411,8 @@ GET /items?search=Iron
 GET /items?search=Rod&item_type=component
 GET /items?limit=100&offset=0
 GET /items?item_type=component&limit=50
+GET /items?unlocked_by_tier=1
+GET /items?unlocked_by_milestone=Tier%201%20-%20Parts
 ```
 
 **Response Model:**
@@ -966,12 +1029,24 @@ Calculate the complete production chain for an item, recursively following all d
 - `target_rate` (required, float): Target production rate (items per minute)
 - `include_alternates` (optional, boolean): Include alternate recipes (default: true)
 - `preferred_recipe` (optional, string): Use specific recipe (for forcing a particular alternate)
+- `byproduct_recycling` (optional, boolean): When true, reduce ingredient demand by using outputs (primary or byproduct) from other steps in the chain. Only the deficit is produced by new steps. Response includes `recycled_flows` and per-ingredient `recycled_rate_per_minute` / `external_rate_per_minute` / `recycled_from` when applicable. Default: false.
+- `max_belt_mk` (optional, integer 1-6): Cap input and output throughput by this belt's speed (items/min). Uses the same belt speeds as `GET /belts`. Do not use together with `input_belt_limit`/`output_belt_limit`.
+- `input_belt_limit` (optional, float): Input belt capacity in items per minute. Use with `output_belt_limit` instead of `max_belt_mk`.
+- `output_belt_limit` (optional, float): Output belt capacity in items per minute. Use with `input_belt_limit` instead of `max_belt_mk`.
+
+When `max_belt_mk` or belt limit params are set, any step whose input or output rate exceeds the limit will include: `exceeds_belt_limit: true`, `required_throughput_per_minute`, and `belt_limit_used` (and optionally `output_exceeds_belt_limit`/`output_required_throughput_per_minute`/`output_belt_limit_used`, `input_exceeds_belt_limit`/`input_required_throughput_per_minute`/`input_belt_limit_used`). Clients can split buildings when `exceeds_belt_limit` is set to avoid over-saturating belts. If these params are omitted, behavior is unchanged (backward compatible).
 
 **Response:**
+
+The response includes `byproduct_recycling` (boolean) indicating whether recycling was applied. Each step includes all recipe products with rates: `products` is an array of `{ "item_class", "amount_per_cycle", "rate_per_minute" }` for every output (primary and byproducts) at that step's scale. When `byproduct_recycling` is true, the top-level `recycled_flows` array summarizes which step's output feeds which consumer (each entry has `consumer_step_index`, `consumer_item`, `consumer_recipe`, `item_class`, `rate_per_minute`, `from_steps` with `supplier_step_index` and `rate_per_minute`). Ingredients may include `recycled_rate_per_minute`, `external_rate_per_minute`, and `recycled_from` (list of `{ "supplier_step_index", "rate_per_minute" }`) when the ingredient was partly or fully satisfied by other steps.
+
+Each step includes `required_output_throughput_per_minute` (output items/min for the step), `recommended_belt_mk`, and `recommended_belt` (object with `mk` and `display_name`) so UIs can show "Mk.X belt" without extra calls. Each ingredient includes `required_throughput_per_minute`, `recommended_belt_mk`, and `recommended_belt`. Belt selection uses the same logic as `GET /calculate/belt-requirements` (smallest belt that meets or exceeds throughput). When belt limits are applied (via `max_belt_mk` or `input_belt_limit`/`output_belt_limit`), a step that exceeds a limit may also include: `exceeds_belt_limit`, `required_throughput_per_minute`, `belt_limit_used`, and optionally `output_exceeds_belt_limit`, `output_required_throughput_per_minute`, `output_belt_limit_used`, `input_exceeds_belt_limit`, `input_required_throughput_per_minute`, `input_belt_limit_used`.
+
 ```json
 {
   "target_item": "Heavy Modular Frame",
   "target_rate": 10.0,
+  "byproduct_recycling": false,
   "total_power_mw": 284.5,
   "buildings": [
     {
@@ -1000,19 +1075,45 @@ Calculate the complete production chain for an item, recursively following all d
       "buildings_needed_rounded": 6,
       "production_rate_per_building": 10.0,
       "target_production_rate": 60.0,
+      "required_output_throughput_per_minute": 60.0,
+      "recommended_belt_mk": 1,
+      "recommended_belt": { "mk": 1, "display_name": "Conveyor Belt Mk.1" },
       "power_per_building_mw": 4.0,
       "total_power_mw": 24.0,
-      "ingredients": [...]
+      "products": [
+        { "item_class": "...", "amount_per_cycle": 1, "rate_per_minute": 60.0 }
+      ],
+      "ingredients": [
+        {
+          "item_class": "...",
+          "amount_per_cycle": 2,
+          "required_rate_per_minute": 120.0,
+          "required_throughput_per_minute": 120.0,
+          "recommended_belt_mk": 2,
+          "recommended_belt": { "mk": 2, "display_name": "Conveyor Belt Mk.2" }
+        }
+      ]
     }
-  ]
+  ],
+  "recycled_flows": []
 }
 ```
+
+When `byproduct_recycling=true`, ingredient entries that are partly or fully satisfied by other steps include `recycled_rate_per_minute`, `external_rate_per_minute`, and `recycled_from` (array of `{ "supplier_step_index", "rate_per_minute" }`). The `recycled_flows` array is populated with one entry per such flow, describing which step supplies which consumer and at what rate.
+
+**Limitations:**
+- Multi-product scaling: The step is scaled so the product matching the requested item meets the required rate; all other products scale proportionally. Recipe selection still uses the first matching recipe (or preferred_recipe) that produces the item.
+- Byproduct recycling uses a greedy, depth-first order: surplus is consumed in the order steps were added. It does not globally optimize allocation or handle circular byproduct dependencies. If the same item is needed in multiple branches, each branch may add its own production step for the deficit; the response still reflects reduced raw/external demand where surplus was applied.
+- Step order in the response is dependency order (upstream steps first, target item last). `recycled_flows[].consumer_step_index` and `from_steps[].supplier_step_index` refer to indices in the `steps` array.
 
 **Example:**
 ```bash
 GET /calculate/production-chain?item=Heavy%20Modular%20Frame&target_rate=10
 GET /calculate/production-chain?item=Iron%20Plate&target_rate=60&include_alternates=false
 GET /calculate/production-chain?item=Computer&target_rate=5&preferred_recipe=Alternate:%20Caterium%20Computer
+GET /calculate/production-chain?item=Iron%20Plate&target_rate=120&max_belt_mk=1
+GET /calculate/production-chain?item=Iron%20Plate&target_rate=120&input_belt_limit=60&output_belt_limit=60
+GET /calculate/production-chain?item=Heavy%20Modular%20Frame&target_rate=10&byproduct_recycling=true
 ```
 
 ---

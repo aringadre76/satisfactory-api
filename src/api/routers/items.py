@@ -22,6 +22,8 @@ except Exception as e:
 async def get_items(
     item_type: Optional[str] = Query(None, description="Filter by item type (raw_resource, component, equipment, building_part)"),
     search: Optional[str] = Query(None, description="Filter by substring match on display name or class name (case-insensitive)"),
+    unlocked_by_tier: Optional[int] = Query(None, description="Filter to items (schematics) unlocked at this tier (uses progression data)"),
+    unlocked_by_milestone: Optional[str] = Query(None, description="Filter to items unlocked by this milestone (display name, case-insensitive)"),
     limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
     offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
@@ -30,6 +32,11 @@ async def get_items(
     
     try:
         items_data = parser.extract_all_items()
+        
+        if unlocked_by_tier is not None or unlocked_by_milestone is not None:
+            unlocked = parser.get_unlocked_class_names(tier=unlocked_by_tier, milestone=unlocked_by_milestone)
+            allowed = unlocked["schematic"]
+            items_data = [i for i in items_data if i.get("class_name") in allowed]
         
         if item_type:
             items_data = [i for i in items_data if (i.get("item_type") or "").lower() == (item_type or "").lower()]
@@ -57,7 +64,7 @@ async def get_item(item_name: str):
     
     try:
         items_data = parser.extract_all_items()
-        item = next((i for i in items_data if i["class_name"] == item_name or i["display_name"].lower() == item_name.lower()), None)
+        item = next((i for i in items_data if i["class_name"] == item_name or (i.get("display_name") or "").lower() == item_name.lower()), None)
         
         if not item:
             raise HTTPException(status_code=404, detail=f"Item '{item_name}' not found")

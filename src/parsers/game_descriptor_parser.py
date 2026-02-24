@@ -1069,7 +1069,44 @@ class GameDescriptorParser:
                                     }
         
         return unlock_map
-    
+
+    def get_unlocked_class_names(self, tier: Optional[int] = None, milestone: Optional[str] = None) -> Dict[str, set]:
+        unlock_map = self._build_unlock_mapping()
+        recipes = set()
+        schematics = set()
+        for class_name, info in unlock_map.items():
+            ut = info.get("unlock_type")
+            t = info.get("tier")
+            m = info.get("milestone") or ""
+            if tier is not None and t != tier:
+                continue
+            if milestone is not None and m.lower() != milestone.lower():
+                continue
+            if ut == "recipe":
+                recipes.add(class_name)
+            elif ut == "schematic":
+                schematics.add(class_name)
+        buildings = set()
+        for entry in self.data:
+            if "Classes" not in entry:
+                continue
+            for class_obj in entry["Classes"]:
+                t = self._parse_int(class_obj.get("mTechTier", "0"))
+                milestone_name = (class_obj.get("mDisplayName") or "").strip()
+                if tier is not None and t != tier:
+                    continue
+                if milestone is not None and milestone_name.lower() != milestone.lower():
+                    continue
+                for unlock_obj in class_obj.get("mUnlocks", []):
+                    if unlock_obj.get("Class") != "BP_UnlockBuildable_C":
+                        continue
+                    buildables_str = unlock_obj.get("mBuildables", "")
+                    pattern = r'([^./]+)\.([^.\']+)_C'
+                    for match in re.findall(pattern, buildables_str):
+                        buildable_name = f"{match[1]}_C"
+                        buildings.add(buildable_name)
+        return {"recipe": recipes, "building": buildings, "schematic": schematics}
+
     def _get_building_class_from_recipe(self, recipe_class_name: str) -> Optional[str]:
         build_prefixes = {
             "Recipe_GeneratorBiomass_Automated": "Build_GeneratorBiomass_Automated",

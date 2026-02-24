@@ -64,13 +64,31 @@ async def get_production_chain(
     item: str = Query(..., description="Item name or class name"),
     target_rate: float = Query(..., description="Target production rate (items per minute)", gt=0),
     include_alternates: bool = Query(True, description="Include alternate recipes in chain"),
-    preferred_recipe: Optional[str] = Query(None, description="Preferred recipe name (for specific alternate)")
+    preferred_recipe: Optional[str] = Query(None, description="Preferred recipe name (for specific alternate)"),
+    byproduct_recycling: bool = Query(False, description="When true, reduce ingredient demand using byproducts from other steps in the chain"),
+    max_belt_mk: Optional[int] = Query(None, description="Cap input/output by this belt mk (1-6); same speeds as GET /belts", ge=1, le=6),
+    input_belt_limit: Optional[float] = Query(None, description="Input belt capacity (items/min); use with output_belt_limit instead of max_belt_mk", gt=0),
+    output_belt_limit: Optional[float] = Query(None, description="Output belt capacity (items/min); use with input_belt_limit instead of max_belt_mk", gt=0)
 ):
     if calculator is None:
         raise HTTPException(status_code=500, detail="Game descriptor data not available")
-    
+    if max_belt_mk is not None and (input_belt_limit is not None or output_belt_limit is not None):
+        raise HTTPException(status_code=400, detail="Use either max_belt_mk or input_belt_limit/output_belt_limit, not both")
+    input_limit: Optional[float] = None
+    output_limit: Optional[float] = None
+    if max_belt_mk is not None:
+        belts = parser.extract_belts() if parser else []
+        belt = next((b for b in belts if b["mk"] == max_belt_mk), None)
+        if not belt:
+            raise HTTPException(status_code=400, detail=f"Belt Mk.{max_belt_mk} not found")
+        speed = belt["speed"]
+        input_limit = speed
+        output_limit = speed
+    else:
+        input_limit = input_belt_limit
+        output_limit = output_belt_limit
     try:
-        result = calculator.calculate_production_chain(item, target_rate, include_alternates, preferred_recipe)
+        result = calculator.calculate_production_chain(item, target_rate, include_alternates, preferred_recipe, input_limit, output_limit, byproduct_recycling=byproduct_recycling)
         if "error" in result:
             raise HTTPException(status_code=404, detail=result["error"])
         return result

@@ -1,9 +1,10 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pathlib import Path
 from datetime import datetime, timezone
-from src.api.routers import miners, belts, resources, recipes, buildings, items, calculations, transportation, power, logistics, extractors, progression
+from src.api.routers import miners, belts, resources, recipes, buildings, items, calculations, transportation, power, logistics, extractors, progression, planning_context
 from src.parsers.game_descriptor_parser import GameDescriptorParser
 
 app = FastAPI(
@@ -32,12 +33,12 @@ app.include_router(power.router, prefix="/power", tags=["power"])
 app.include_router(logistics.router, prefix="/logistics", tags=["logistics"])
 app.include_router(extractors.router, prefix="/extractors", tags=["extractors"])
 app.include_router(progression.router, prefix="/progression", tags=["progression"])
+app.include_router(planning_context.router, prefix="/planning-context", tags=["planning-context"])
 
 DESCRIPTOR_FILE = Path(__file__).resolve().parent.parent.parent / "Docs" / "en-US.json"
 
 @app.get("/")
 async def root():
-    import os
     base_url = os.environ.get("BASE_URL", "").rstrip("/")
     out = {
         "message": "Satisfactory Game Data API",
@@ -55,13 +56,14 @@ async def health():
 
 def _game_data_meta():
     if not DESCRIPTOR_FILE.exists():
-        return {"api_version": "1.0.0", "game_data_source": "descriptor", "game_data_last_updated": None}
+        return {"api_version": "1.0.0", "game_data_source": "descriptor", "game_data_last_updated": None, "overclock": {"min": 1, "max": 250, "presets": [100, 125, 150, 200, 250]}}
     mtime = DESCRIPTOR_FILE.stat().st_mtime
     dt = datetime.fromtimestamp(mtime, tz=timezone.utc)
     return {
         "api_version": "1.0.0",
         "game_data_source": "descriptor",
         "game_data_last_updated": dt.isoformat().replace("+00:00", "Z"),
+        "overclock": {"min": 1, "max": 250, "presets": [100, 125, 150, 200, 250]},
     }
 
 @app.get("/meta")

@@ -4,6 +4,7 @@ from typing import List, Optional
 import logging
 from src.models.recipe import Recipe, RecipeIngredient, RecipeProduct
 from src.parsers.game_descriptor_parser import GameDescriptorParser
+from src.utils.calculations import find_recipes_by_product
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -23,6 +24,9 @@ async def get_recipes(
     alternate_only: Optional[bool] = Query(None, description="Filter to only alternate recipes"),
     building: Optional[str] = Query(None, description="Filter by building type (e.g., Constructor, Assembler). Case-insensitive."),
     search: Optional[str] = Query(None, description="Filter by substring match on display name or class name (case-insensitive)"),
+    produces: Optional[str] = Query(None, description="Filter to recipes that output this item (by display name or class name, case-insensitive)"),
+    unlocked_by_tier: Optional[int] = Query(None, description="Filter to recipes unlocked at this tier (uses progression data)"),
+    unlocked_by_milestone: Optional[str] = Query(None, description="Filter to recipes unlocked by this milestone (display name, case-insensitive)"),
     limit: Optional[int] = Query(None, ge=1, le=PAGINATION_LIMIT_MAX, description="Max number of results to return (applied after filters)"),
     offset: Optional[int] = Query(None, ge=0, description="Number of results to skip (applied after filters)")
 ):
@@ -31,6 +35,14 @@ async def get_recipes(
     
     try:
         recipes_data = parser.extract_recipes()
+        
+        if produces is not None:
+            recipes_data = find_recipes_by_product(parser, produces)
+        
+        if unlocked_by_tier is not None or unlocked_by_milestone is not None:
+            unlocked = parser.get_unlocked_class_names(tier=unlocked_by_tier, milestone=unlocked_by_milestone)
+            allowed = unlocked["recipe"]
+            recipes_data = [r for r in recipes_data if r.get("class_name") in allowed]
         
         if alternate_only is not None:
             recipes_data = [r for r in recipes_data if r["is_alternate"] == alternate_only]
@@ -87,7 +99,7 @@ async def get_recipe(recipe_name: str):
     
     try:
         recipes_data = parser.extract_recipes()
-        recipe = next((r for r in recipes_data if r["class_name"] == recipe_name or r["display_name"].lower() == recipe_name.lower()), None)
+        recipe = next((r for r in recipes_data if r["class_name"] == recipe_name or (r.get("display_name") or "").lower() == recipe_name.lower()), None)
         
         if not recipe:
             raise HTTPException(status_code=404, detail=f"Recipe '{recipe_name}' not found")

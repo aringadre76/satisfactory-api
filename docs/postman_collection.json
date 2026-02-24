@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Satisfactory API - All Endpoints",
-    "description": "Complete collection of all Satisfactory API endpoints for testing. All endpoints have been tested and verified. See endpoints.md for detailed documentation.",
+    "description": "Complete collection of all Satisfactory API endpoints for testing. All endpoints have been tested and verified. See endpoints.md for detailed documentation. Default base_url targets the live deployment; set base_url to http://localhost:8000 for local development.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -17,6 +17,115 @@
         },
         "description": "Root endpoint returning API information"
       }
+    },
+    {
+      "name": "Get Meta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/meta",
+          "host": ["{{base_url}}"],
+          "path": ["meta"]
+        },
+        "description": "API version, game data metadata, and overclock range/presets for planner UIs"
+      }
+    },
+    {
+      "name": "Get Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Liveness check; returns 200 when the application process is running"
+      }
+    },
+    {
+      "name": "Get Ready",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/ready",
+          "host": ["{{base_url}}"],
+          "path": ["ready"]
+        },
+        "description": "Readiness check; returns 200 when descriptor file is present and loadable, 503 otherwise"
+      }
+    },
+    {
+      "name": "Get Version",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/version",
+          "host": ["{{base_url}}"],
+          "path": ["version"]
+        },
+        "description": "Alias for meta; returns api_version, game_data_source, game_data_last_updated, and overclock"
+      }
+    },
+    {
+      "name": "Planning Context",
+      "item": [
+        {
+          "name": "Get Planning Context",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/planning-context",
+              "host": ["{{base_url}}"],
+              "path": ["planning-context"]
+            },
+            "description": "Single JSON payload with items, recipes, buildings, belts, miners, resource-nodes, raw-resources, and overclock for planner bootstrap"
+          }
+        },
+        {
+          "name": "Get Planning Context with progression",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/planning-context?include_progression=true",
+              "host": ["{{base_url}}"],
+              "path": ["planning-context"],
+              "query": [
+                {
+                  "key": "include_progression",
+                  "value": "true",
+                  "description": "Include milestones and unlocks in response"
+                }
+              ]
+            },
+            "description": "Planning context including progression (milestones and unlocks)"
+          }
+        },
+        {
+          "name": "Get Planning Context tier 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/planning-context?tier=3",
+              "host": ["{{base_url}}"],
+              "path": ["planning-context"],
+              "query": [
+                {
+                  "key": "tier",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "Planning context filtered to tier 3 (buildings unlocked at or before tier 3)"
+          }
+        }
+      ]
     },
     {
       "name": "Miners",
@@ -249,6 +358,44 @@
           }
         },
         {
+          "name": "Get Recipes - By Product (Iron Plate)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes?produces=Iron Plate",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"],
+              "query": [
+                {
+                  "key": "produces",
+                  "value": "Iron Plate"
+                }
+              ]
+            },
+            "description": "Filter recipes that output Iron Plate (by display name or class name)"
+          }
+        },
+        {
+          "name": "Get Recipes - Unlocked by Tier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/recipes?unlocked_by_tier=1",
+              "host": ["{{base_url}}"],
+              "path": ["recipes"],
+              "query": [
+                {
+                  "key": "unlocked_by_tier",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Filter to recipes unlocked at tier 1 (planner UI: show only options available at this tier)"
+          }
+        },
+        {
           "name": "Get Recipe by Name (Class Name)",
           "request": {
             "method": "GET",
@@ -322,6 +469,25 @@
               ]
             },
             "description": "Filter buildings by type"
+          }
+        },
+        {
+          "name": "Get Buildings - Unlocked by Tier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buildings?unlocked_by_tier=1",
+              "host": ["{{base_url}}"],
+              "path": ["buildings"],
+              "query": [
+                {
+                  "key": "unlocked_by_tier",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Filter to buildings unlocked at tier 1 (planner UI: show only options available at this tier)"
           }
         },
         {
@@ -417,6 +583,25 @@
               ]
             },
             "description": "Filter items by type: raw_resource"
+          }
+        },
+        {
+          "name": "Get Items - Unlocked by Tier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items?unlocked_by_tier=1",
+              "host": ["{{base_url}}"],
+              "path": ["items"],
+              "query": [
+                {
+                  "key": "unlocked_by_tier",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Filter to items (schematics) unlocked at tier 1 (planner UI: show only options available at this tier)"
           }
         },
         {
@@ -2295,8 +2480,8 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8000",
-      "description": "Base URL for the Satisfactory API",
+      "value": "https://satisfactory-api-yfw1.onrender.com",
+      "description": "Base URL for the Satisfactory API (live deployment). Use http://localhost:8000 for local development.",
       "disabled": false
     },
     {
