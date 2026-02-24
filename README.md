@@ -174,6 +174,43 @@ The API automatically reads from the data files, so no code changes are needed.
 
 The API reads from game descriptor files that come with your Satisfactory installation. These JSON files contain all the game data in a structured format. The API simply makes this data accessible through HTTP endpoints.
 
+## Deploying the API
+
+You can run the API on the web so others can call it. The app uses the `PORT` environment variable when set (default 8000), which most hosting platforms provide automatically.
+
+### Docker
+
+Build and run locally or on any host that supports Docker:
+
+```bash
+docker build -t satisfactory-api .
+docker run -p 8000:8000 satisfactory-api
+```
+
+To use a different port: `docker run -p 3000:3000 -e PORT=3000 satisfactory-api`
+
+### Railway
+
+1. Push the repo to GitHub and sign in at [railway.app](https://railway.app).
+2. New Project -> Deploy from GitHub repo -> select this repo.
+3. Railway will detect the Dockerfile and deploy. If you do not use Docker, set the start command to: `uvicorn src.api.main:app --host 0.0.0.0 --port $PORT`
+4. Open the generated URL (e.g. `https://your-app.up.railway.app`). Docs: `https://your-app.up.railway.app/docs`
+
+### Render
+
+1. Push to GitHub and sign in at [render.com](https://render.com).
+2. New -> Web Service -> connect the repo.
+3. Environment: Python 3. Set start command: `uvicorn src.api.main:app --host 0.0.0.0 --port $PORT`
+4. Deploy. Your API will be at `https://your-service.onrender.com`
+
+### Fly.io
+
+1. Install [flyctl](https://fly.io/docs/hands-on/install-flyctl/) and sign in.
+2. From the project root: `fly launch` (accept defaults or name the app).
+3. Deploy: `fly deploy`. The API will be at `https://your-app.fly.dev`
+
+After deploying, share the base URL (e.g. `https://your-app.fly.dev`) so others can call endpoints like `GET /recipes` or use `/docs` for the interactive API docs.
+
 ## License
 
 This project is for educational and community use with Satisfactory game data.

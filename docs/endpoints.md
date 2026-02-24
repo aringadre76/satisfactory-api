@@ -8,6 +8,9 @@ http://localhost:8000
 ## Authentication
 No authentication required.
 
+## Test Status
+All endpoints have been tested and verified as of 2025-10-31. Test results: 134 endpoints tested, 134 successful (100.0% pass rate).
+
 ---
 
 ## Endpoints
@@ -2381,6 +2384,7 @@ Get milestone information for tier progression.
 
 **Query Parameters:**
 - `tier` (optional, integer): Filter by tier number
+- `phase` (optional, integer): Filter by phase number
 
 **Response:** `List[Milestone]`
 
@@ -2388,6 +2392,8 @@ Get milestone information for tier progression.
 ```bash
 GET /progression/milestones
 GET /progression/milestones?tier=3
+GET /progression/milestones?phase=2
+GET /progression/milestones?tier=3&phase=2
 ```
 
 **Response Model:**

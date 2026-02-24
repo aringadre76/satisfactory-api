@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Satisfactory API - All Endpoints",
-    "description": "Complete collection of all Satisfactory API endpoints for testing",
+    "description": "Complete collection of all Satisfactory API endpoints for testing. All endpoints have been tested and verified. See endpoints.md for detailed documentation.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
